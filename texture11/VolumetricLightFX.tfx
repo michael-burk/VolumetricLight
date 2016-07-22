@@ -1,0 +1,99 @@
+
+Texture2D tex0: PREVIOUS;
+SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=BORDER;AddressV=BORDER;};
+float2 R:TARGETSIZE;
+
+Texture2D shadowMap <string uiname="shadowMap";>;
+Texture2D depthMap <string uiname="depthMap";>;
+Texture2D worldPosMap <string uiname="worldPosMap";>;
+Texture2D noiseTex <string uiname="noise";>;
+Texture2D noiseTex2 <string uiname="noise2";>;
+
+Texture2D colTex <string uiname="colTex";>;
+
+float4 Color <bool color=true;>;
+float3 camPos;
+float3 lightPos;
+float3 lightDir;
+float farPlane;
+float fade;
+float blurFactor;
+static const float G_SCATTERING = -.2;
+static const float PI = 3.14159265f;
+int NB_STEPS = 10;
+float4x4 shadowVP;
+
+	// Mie scaterring approximated with Henyey-Greenstein phase function.
+	float ComputeScattering(float lightDotView)
+	{
+	float result = 1.0f - G_SCATTERING;
+	result *= result;
+	result /= (4.0f * PI * pow(abs(1.0f + G_SCATTERING * G_SCATTERING - (2.0f * G_SCATTERING) * lightDotView), 1.5f));
+	return result;
+	}
+
+float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
+
+	//float3 worldPos = getWorldPosition(input.uv);
+	float3 startPosition = camPos;
+	float3 endRayPosition = (worldPosMap.Sample(s0,x).xyz);
+//	endRayPosition *= noiseTex2.Sample(s0,x).rgb;
+
+	float3 rayVector = endRayPosition - startPosition;
+	 
+	float rayLength = length(rayVector);
+	
+	float3 rayDirection = rayVector / rayLength;
+	 
+	float stepLength = rayLength / NB_STEPS;
+	
+	float3 step = rayDirection * stepLength;
+
+	startPosition += step * noiseTex.Sample(s0,x).r;
+	
+	
+	float3 currentPosition = startPosition;
+	
+	float3 accumFog = 0.0f.xxx;
+	float shadowMapValue;
+	float4 worldInShadowCameraSpace;
+	float z = 0;
+	for (int i = 0; i < NB_STEPS; i++)
+	{
+		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
+		worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
+			
+		shadowMapValue = shadowMap.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).r;
+		
+
+	if (shadowMapValue > worldInShadowCameraSpace.z)
+	{	
+		if(z == 0) z = mul(float4(currentPosition, 1.0f), shadowVP).z;
+		float distFactor = saturate(1 * 1-pow(mul(float4(currentPosition, 1.0f), shadowVP).z*1/farPlane*fade,3));
+
+		accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor;
+		
+		accumFog += colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5)*distFactor*2;
+		
+	}
+	currentPosition += step;
+	
+	}
+	
+	accumFog /= NB_STEPS ;
+
+	
+	float4 returnVal = float4(accumFog,1)*Color;
+	returnVal.a = 1 + pow(z*.04,5) ;
+	//returnVal.a = dot(rayDirection, lightDir);
+	return returnVal;
+	//return pow(z*.01,2);
+}
+
+
+
+technique10 Volumetric_Light{
+	pass P1<string format="R32G32B32A32_float";>{SetPixelShader(CompileShader(ps_5_0,VolumetricLight()));}
+	//pass P2{SetPixelShader(CompileShader(ps_4_0,blurX()));}
+	//pass P3{SetPixelShader(CompileShader(ps_4_0,blurY()));}
+}

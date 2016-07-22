@@ -1,0 +1,66 @@
+Texture2D tex0: PREVIOUS;
+Texture2D tex1 <string uiname="Control";>;
+Texture2D texIN: INITIAL;
+Texture2D texP1: PASSRESULT1;
+Texture2D texP2: PASSRESULT2;
+
+float2 R:TARGETSIZE;
+float4x4 tP;
+float Width <float uimin=0.0;> =0.5;
+float Threshold <float uimin=0.0;> =0.05;
+
+SamplerState s0 <bool visible=true;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=CLAMP;AddressV=CLAMP;};
+SamplerState s1:IMMUTABLE {Filter=MIN_MAG_MIP_LINEAR;AddressU=CLAMP;AddressV=CLAMP;};
+
+int Iterations <float uimin=1.0;float uimax=16.0;> =8;
+
+float4 pBLURV(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0,uniform float2 dir=1,uniform float th=1):SV_Target{
+	float4 c=0;
+	
+	float d0=tex1.SampleLevel(s0,x,0).x;
+	if(d0==1)return tex0.SampleLevel(s0,x,0);
+	float ld0=tP._43/(d0-tP._33);
+	float fw=fwidth(ld0);
+	float kk=0.00001;
+	for(int i=0;i<Iterations;i++){
+		float2 uv=x+dir*Width*(i-Iterations*0.5)/R/pow(ld0,1);
+		float d=tex1.SampleLevel(s1,uv,0).x;
+		float ld=tP._43/(d-tP._33);
+		float4 smp=tex0.SampleLevel(s0,uv,0);
+		if(abs(ld-ld0)>Threshold*th)continue;
+		c+=smp;//*smoothstep(.5,0,abs(i/32.-0.5))*2
+		kk+=1;
+	}
+	//return abs(fw)*28;
+	return c/kk;
+}
+
+float4 pLD(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_Target{
+	float4 c=tex0.SampleLevel(s0,x,0);
+	float d=tex1.SampleLevel(s1,x,0).x;
+	float ld=tP._43/(d-tP._33);
+	c=abs(fwidth(ld));
+	return c;
+}
+float4 pMIX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_Target{
+	float4 c=tex0.SampleLevel(s0,x,0);
+	float d=tex1.SampleLevel(s1,x,0).x;
+	float ld=tP._43/(d-tP._33);
+	c.rgb=fwidth(ld);
+	//c=lerp(texP1.SampleLevel(s0,x,0),texIN.SampleLevel(s0,x,0),saturate(fwidth(1./texP2.SampleLevel(s0,x,0))*72-0.5));
+	c=lerp(texP1.SampleLevel(s0,x,0),texIN.SampleLevel(s0,x,0),saturate((tex0.SampleLevel(s0,x,0))*1-0.05));
+	//c=texP2.SampleLevel(s0,x,0);
+	return c;
+}
+technique10 Downscaled{
+	pass P1<float scale=0.5;>{SetPixelShader(CompileShader(ps_4_0,pBLURV(float2(0.5,0))));}
+	pass P2{SetPixelShader(CompileShader(ps_4_0,pBLURV(float2(0,0.5))));}
+	
+	
+	pass P3{SetPixelShader(CompileShader(ps_4_0,pLD()));}
+	pass P4<bool initial=true;>{SetPixelShader(CompileShader(ps_4_0,pMIX()));}
+}
+technique10 Full{
+	pass P1{SetPixelShader(CompileShader(ps_4_0,pBLURV(float2(1,0))));}
+	pass P2{SetPixelShader(CompileShader(ps_4_0,pBLURV(float2(0,1))));}
+}

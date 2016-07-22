@@ -1,0 +1,105 @@
+struct vs2ps { float4 pos: SV_POSITION; float2 uv: TEXCOORD0; };
+
+Texture2D InputTexture : INITIAL;
+Texture2D DepthTexture;
+Texture2D NormTexture;
+//Camera from scene
+float4x4 tV;
+float4x4 tVI;
+float4x4 tP;
+float4x4 tPI;
+//Camera From Light
+
+float4x4 tLV;
+float4x4 tLVP;
+float4x4 tLVI;
+float4x4 tLP;
+float4x4 tLPI;
+
+Texture2D<float> ShadowTexture;
+float bias = 0.0001f;
+float ShadowStrength = 0.2;
+
+SamplerState LinearSampler : IMMUTABLE { Filter = MIN_MAG_MIP_LINEAR;AddressU = Clamp;AddressV = Clamp;};
+
+float3 ShadowPos(float4 shadowpos)
+{
+	float3 ligthspace  = shadowpos.xyz / shadowpos.w;
+    float2 shadowtex = 0.5 * ligthspace.xy + float2( 0.5, 0.5 );
+    shadowtex.y = 1.0f - shadowtex.y;
+    return float3( shadowtex, ligthspace.z - 0.005f );
+}
+
+float3 DepthToView(float2 positionScreen,float viewSpaceZ)
+{
+    float2 screenSpaceRay = float2(positionScreen.x / tP._11,positionScreen.y / tP._22); 
+    float3 positionView;
+    positionView.z = viewSpaceZ;
+    positionView.xy = screenSpaceRay.xy * positionView.z;
+    
+    return positionView;
+}
+float3 UVtoEYE(float2 UV,float4x4 tVI,float4x4 tPI){
+	return normalize(mul(float4(mul(float4((UV.xy*2-1)*float2(1,-1),0,1),tPI).xy,1,0),tVI).xyz);
+}
+float4 UVZtoVIEW(float2 UV,float z,float4x4 tP,float4x4 tPI){
+	//if(IS_ORTHO(tP))return mul(float4(UV.x*2-1,1-2*UV.y,z,1.0),tPI);
+	float4 p=mul(float4(UV.x*2-1,1-2*UV.y,0,1.0),tPI);
+	float ld = tP._43 / (z - tP._33);
+	p=float4(p.xy*ld,ld,1.0);
+	return p; 
+}
+float dotbias=.4;
+float4 PS_RenderScene( vs2ps input ) : SV_Target0
+{
+    float4 col = 1;// InputTexture.Load(int3(input.pos.xy,0));
+	float d = DepthTexture.Load(int3(input.pos.xy,0)).r;
+	float3 Norm = NormTexture.Load(int3(input.pos.xy,0)).rgb;
+	
+	float2 ScreenPos = input.uv;
+	ScreenPos *= 2.0f;
+	ScreenPos -= 1.0f;
+	ScreenPos.y *= -1.0f;
+	
+	float LinearDepth = tP._43 / (d - tP._33);
+	
+	//Just return black if far plane, can be changed
+	//if (d > 0.99f) { return 0; }
+	if (d > 1.0f) { return 1; }
+	//float3 posv = DepthToView(ScreenPos,LinearDepth);
+	float3 posv = UVZtoVIEW(input.uv,d,tP,tPI).xyz;
+	
+	float3 posw = mul(float4(posv,1),tVI).xyz;
+	
+	float4 projs = mul(float4(posw,1),tLV);
+	projs = mul(float4(projs.xyz,1),tLP);
+
+	float2 uv=projs.xy*float2(1,-1)/projs.w*.5+.5;
+	float4 ppp=mul(float4 (posv.xyz,1),tP);
+	float depthValue =  ShadowTexture.Sample(LinearSampler, uv).r;
+    float4 spv=UVZtoVIEW(uv,depthValue,tLP,tLPI);
+	float lightDepthValue = (projs.z / projs.w) - bias;
+    //float lightDepthValue=pshadow.z-bias;
+    float3 cd=UVtoEYE(uv,tLVI,tLPI);
+    float f=sqrt(saturate(-dot(Norm.xyz,cd)));
+    float shd=lightDepthValue < depthValue;
+    shd*=f;
+    //if(f<dotbias)shd=f;
+	//return sin(saturate(projectTexCoord.xyyy)*888);
+    shd=lerp(shd,f,smoothstep(.05,-.05,f-dotbias))+0.2;
+//	(abs(pow(length(float2(.5,.5)-uv.xy),3)))
+//	if(any(abs(uv.xy-0.5)>.5)) return 1;
+//   	return (lerp(col, (col*lerp(1-ShadowStrength,1,saturate(shd))), saturate(1-clamp(pow(length(float2(1,1)-uv.xy*2),3),0,1 )) ));
+//	  	return (lerp(col, col*lerp(1-ShadowStrength,1,saturate(shd)), saturate(1-pow(length(float2(1,1)-uv.xy*2),3)) ));
+	
+	  return (lerp(col, col*lerp(1-ShadowStrength,1,saturate(shd)),1 ));
+//    return col*lerp(1-ShadowStrength,1,saturate(shd));
+}
+
+technique10 Render
+{
+	pass P0
+	{
+		SetPixelShader( CompileShader( ps_4_0, PS_RenderScene() ) );
+	}
+}

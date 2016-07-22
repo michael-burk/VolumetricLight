@@ -1,0 +1,59 @@
+//@author: mburk
+//@help: 
+//@tags: filter
+//@credits: http://blazelight.net/de/artikel/ssao-tutorial-deutsch.php
+
+SamplerState blurSampler : register(s0); 
+Texture2D linearDepth;
+Texture2D tex;
+
+Texture2D tex0: PREVIOUS;
+
+SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=BORDER;AddressV=BORDER;};
+float2 R:TARGETSIZE;
+
+
+float4 upsampling(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
+	
+	float upSampledDepth = linearDepth.Sample(s0,x).x;
+	float3 color = 0.0f.xxx;
+	float totalWeight = 0.0f;
+	
+	// Select the closest downscaled pixels.
+	
+	int xOffset = PosWVP.x % 2 == 0 ? -1 : 1;
+	int yOffset = PosWVP.y % 2 == 0 ? -1 : 1;
+	
+	int2 offsets[] = {int2(0, 0),
+	int2(0, yOffset),
+	int2(xOffset, 0),
+	int2(xOffset, yOffset)};
+	
+	for (int i = 0; i < 4; i ++)
+	{
+	
+//		float3 downscaledColor = tex.Sample(int3(downscaledCoordinates + offsets[i], 0));//
+		
+	float3 downscaledColor = tex.Sample(s0,x + offsets[i], 0);
+	float3 downscaledDepth = linearDepth.Sample(s0,x + offsets[i], 1);
+		
+	float currentWeight = 1.0f;
+	currentWeight *= max(0.0f, 1.0f - (0.05f) * abs(downscaledDepth - upSampledDepth));
+		
+	color += downscaledColor * currentWeight;
+	totalWeight += currentWeight;
+		
+	}
+	
+	float3 volumetricLight;
+	const float epsilon = 0.0001f;
+	volumetricLight.xyz = color/(totalWeight + epsilon);
+	
+	return float4(volumetricLight.xyz, 1.0f)*4;
+}
+
+technique10 RGB{
+	pass P1{SetPixelShader(CompileShader(ps_4_0,upsampling()));}
+
+}
+
