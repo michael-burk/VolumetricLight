@@ -58,6 +58,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	float shadowMapValue;
 	float4 worldInShadowCameraSpace;
 	float z = 0;
+	float z1 = 0;
 	for (int i = 0; i < NB_STEPS; i++)
 	{
 		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
@@ -68,12 +69,16 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 	if (shadowMapValue > worldInShadowCameraSpace.z)
 	{	
-		if(z == 0) z = mul(float4(currentPosition, 1.0f), shadowVP).z;
+		
 		float distFactor = saturate(1 * 1-pow(mul(float4(currentPosition, 1.0f), shadowVP).z*1/farPlane*fade,3));
 
 		accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor;
 		
 		accumFog += colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5)*distFactor*2;
+		
+		//Save z
+		if(z == 0) z = mul(float4(currentPosition, 1.0f), shadowVP).z;
+		if(z1 == 0) z1 = 1-length(lightDir-rayDirection);
 		
 	}
 	currentPosition += step;
@@ -84,8 +89,10 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 	
 	float4 returnVal = float4(accumFog,1)*Color;
-	returnVal.a = 1 + pow(z*.04,5) ;
-	//returnVal.a = dot(rayDirection, lightDir);
+	returnVal.a = .5 +(  pow(z*.04,5)) * saturate(z1+.8);
+	//returnVal.a = (1 +  pow(z*.04,5)) * length(lightDir-rayDirection);
+	//returnVal.a = 1-length(lightDir-rayDirection);
+	//returnVal.a = z;
 	return returnVal;
 	//return pow(z*.01,2);
 }

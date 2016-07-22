@@ -109,8 +109,8 @@ float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 technique10 RGB{
 	pass P1{SetPixelShader(CompileShader(ps_4_0,blurX()));}
 	pass P2{SetPixelShader(CompileShader(ps_4_0,blurY()));}
-//	pass P3{SetPixelShader(CompileShader(ps_4_0,blurX()));}
-//	pass P4{SetPixelShader(CompileShader(ps_4_0,blurY()));}
+	pass P3{SetPixelShader(CompileShader(ps_4_0,blurX()));}
+	pass P4{SetPixelShader(CompileShader(ps_4_0,blurY()));}
 //	pass P5{SetPixelShader(CompileShader(ps_4_0,blurX()));}
 //	pass P6{SetPixelShader(CompileShader(ps_4_0,blurY()));}
 }
