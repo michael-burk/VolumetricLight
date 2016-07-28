@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta34.2.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\RECENT\VolumetricLight\volumetric light.v4p" systemname="volumetric light_1" filename="C:\Users\Michael\Desktop\Volumetric Light\volumetric light_1.v4p" scrollx="2925" scrolly="3630" bgcolor="15132390">
+   <PATCH nodename="C:\Users\Michael\Desktop\VolumetricLight\volumetric light.v4p" systemname="volumetric light_1" filename="C:\Users\Michael\Desktop\Volumetric Light\volumetric light_1.v4p" scrollx="0" scrolly="7425" bgcolor="15132390">
    <BOUNDS type="Window" left="14295" top="0" width="14610" height="15855">
    </BOUNDS>
    <PACK Name="addonpack" Version="34.1.0">
@@ -1449,7 +1449,7 @@
    </BOUNDS>
    <PIN pinname="Input 1" visible="1">
    </PIN>
-   <PIN pinname="Input 2" slicecount="1" visible="1" values="8">
+   <PIN pinname="Input 2" slicecount="1" values="8" visible="1">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -1731,7 +1731,7 @@
    </BOUNDS>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
-   <PIN pinname="Filename" slicecount="1" values="..\..\..\Pictures\Starstruck.bmp">
+   <PIN pinname="Filename" slicecount="1" values="..\..\Pictures\Starstruck.bmp">
    </PIN>
    </NODE>
    <NODE systemname="Halo (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Source\Halo.tfx" nodename="Halo (DX11.TextureFX)" componentmode="Hidden" id="207">
