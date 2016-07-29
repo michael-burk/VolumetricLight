@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta34.2.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\RECENT\VolumetricLight\volumetric light.v4p" systemname="volumetric light_1" filename="C:\Users\Michael\Desktop\Volumetric Light\volumetric light_1.v4p" scrollx="5190" scrolly="8775" bgcolor="15132390">
+   <PATCH nodename="C:\Users\Michael\Desktop\RECENT\VolumetricLight\volumetric light.v4p" systemname="volumetric light_1" filename="C:\Users\Michael\Desktop\Volumetric Light\volumetric light_1.v4p" scrollx="1965" scrolly="4410" bgcolor="15132390">
    <BOUNDS type="Window" left="14190" top="-105" width="14610" height="15855">
    </BOUNDS>
    <PACK Name="addonpack" Version="34.1.0">
@@ -95,7 +95,7 @@
    </PIN>
    <BOUNDS type="Box" left="4860" top="14850">
    </BOUNDS>
-   <PIN pinname="Enabled" slicecount="1" values="1">
+   <PIN pinname="Enabled" slicecount="1" values="0">
    </PIN>
    </NODE>
    <LINK srcnodeid="11" srcpinname="Buffers" dstnodeid="8" dstpinname="Texture In" linkstyle="Bezier">
@@ -405,11 +405,11 @@
    </LINKPOINT>
    </LINK>
    <NODE nodename="IOBox (Color)" componentmode="InABox" id="37" systemname="IOBox (Color)">
-   <BOUNDS type="Box" left="6210" top="6720" width="1695" height="810">
+   <BOUNDS type="Box" left="4140" top="6585" width="1695" height="810">
    </BOUNDS>
-   <BOUNDS type="Node" left="6210" top="6720" width="0" height="0">
+   <BOUNDS type="Node" left="4140" top="6585" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="2" visible="1" values="|0.00000,0.00000,0.00000,1.00000|,|0.22799,0.08421,0.00000,1.00000|">
+   <PIN pinname="Color Input" slicecount="2" visible="1" values="|0.00000,0.00000,0.00000,1.00000|,|0.00000,0.00000,0.00000,1.00000|">
    </PIN>
    <PIN pinname="Rows" slicecount="1" values="2">
    </PIN>
@@ -419,9 +419,9 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="37" srcpinname="Color Output" dstnodeid="15" dstpinname="Color" linkstyle="Bezier">
-   <LINKPOINT x="6240" y="7725">
+   <LINKPOINT x="4860" y="7635">
    </LINKPOINT>
-   <LINKPOINT x="6240" y="7725">
+   <LINKPOINT x="5550" y="7680">
    </LINKPOINT>
    </LINK>
    <NODE systemname="BlendBasic (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Mixer\BlendBasic.tfx" nodename="BlendBasic (DX11.TextureFX)" componentmode="Hidden" id="38">
@@ -433,7 +433,7 @@
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
-   <PIN pinname="Technique" slicecount="1" values="Add">
+   <PIN pinname="Technique" slicecount="1" values="Add" visible="1">
    </PIN>
    <PIN pinname="Input" slicecount="1" values="1">
    </PIN>
@@ -1241,7 +1241,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="16290" top="1125" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="30">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="80">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -1287,7 +1287,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="15360" top="1455" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.001">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -1325,7 +1325,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="5640" top="9255" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.00000,0.79018,0.98147,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.13401,0.11449,0.20760,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Background Color|">
    </PIN>
@@ -1431,7 +1431,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="15030" top="1725" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.12">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.125">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -1535,7 +1535,7 @@
    </BOUNDS>
    <PIN pinname="Texture In" slicecount="1" values="||" visible="1">
    </PIN>
-   <PIN pinname="Contrast" slicecount="1" values="1">
+   <PIN pinname="Contrast" slicecount="1" values="0">
    </PIN>
    <PIN pinname="Brightness" slicecount="1" values="1">
    </PIN>
@@ -1855,7 +1855,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="15960" top="14895" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="2">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.84">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
