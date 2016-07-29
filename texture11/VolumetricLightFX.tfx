@@ -17,7 +17,8 @@ float3 lightPos;
 float3 lightDir;
 float farPlane;
 float fade;
-float blurFactor;
+float fadeZ;
+//float blurFactor;
 static const float G_SCATTERING = -.2;
 static const float PI = 3.14159265f;
 int NB_STEPS = 10;
@@ -58,7 +59,8 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	float shadowMapValue;
 	float4 worldInShadowCameraSpace;
 	float z = 0;
-	float z1 = 0;
+	float z1 = 1;
+	float distFactor;
 	for (int i = 0; i < NB_STEPS; i++)
 	{
 		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
@@ -70,7 +72,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	if (shadowMapValue > worldInShadowCameraSpace.z)
 	{	
 		
-		float distFactor = saturate(1 * 1-pow(mul(float4(currentPosition, 1.0f), shadowVP).z*1/farPlane*fade,3));
+		distFactor = saturate(1 * 1-pow(mul(float4(currentPosition, 1.0f), shadowVP).z*1/farPlane*fade,3));
 
 		accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor;
 		
@@ -78,7 +80,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		
 		//Save z
 		if(z == 0) z = mul(float4(currentPosition, 1.0f), shadowVP).z;
-		if(z1 == 0) z1 = 1-length(lightDir-rayDirection);
+		if(z1 == 1) z1 = 1-saturate(length(lightDir-rayDirection) -.9 ) ;
 		
 	}
 	currentPosition += step;
@@ -89,12 +91,11 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 	
 	float4 returnVal = float4(accumFog,1)*Color;
-	returnVal.a = .5 +(  pow(z*.04,5)) * saturate(z1+.8);
-	//returnVal.a = (1 +  pow(z*.04,5)) * length(lightDir-rayDirection);
-	//returnVal.a = 1-length(lightDir-rayDirection);
-	//returnVal.a = z;
+	//returnVal.a = .5 +(  pow(z*.05*fadeZ,5)) * saturate(z1);
+	returnVal.a = .5 +(  pow(z*.05*fadeZ,5)) * (z1);
+	//returnVal.a = (z1);
 	return returnVal;
-	//return pow(z*.01,2);
+
 }
 
 
