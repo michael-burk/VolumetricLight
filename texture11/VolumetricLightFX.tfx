@@ -7,7 +7,6 @@ Texture2D shadowMap <string uiname="shadowMap";>;
 Texture2D depthMap <string uiname="depthMap";>;
 Texture2D worldPosMap <string uiname="worldPosMap";>;
 Texture2D noiseTex <string uiname="noise";>;
-Texture2D noiseTex2 <string uiname="noise2";>;
 
 Texture2D colTex <string uiname="colTex";>;
 
@@ -68,8 +67,8 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			
 		shadowMapValue = shadowMap.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).r;
 		
-
-	if (shadowMapValue > worldInShadowCameraSpace.z)
+	float3 lightToObject = lightPos - currentPosition ;
+	if (shadowMapValue > worldInShadowCameraSpace.z && dot(lightToObject,lightDir) < 0)
 	{	
 		
 		distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), shadowVP).z / farPlane * fade, 3));
