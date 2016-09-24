@@ -1,8 +1,8 @@
-<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta34.2.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\fantasticvoyage\modules\superphong\Modules\Cone (DX11).v4p" systemname="Cone (DX11)" filename="C:\vvvv\vvvv-addons\Modules\Cone (DX11).v4p" scrollx="0" scrolly="0">
-   <BOUNDS type="Window" left="4920" top="4725" width="8100" height="5880">
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha34.104.dtd" >
+   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\modules\Cone (DX11).v4p" systemname="Cone (DX11)" filename="C:\vvvv\vvvv-addons\Modules\Cone (DX11).v4p" scrollx="0" scrolly="0">
+   <BOUNDS type="Window" left="13710" top="5955" width="8100" height="5880">
    </BOUNDS>
-   <PACK Name="addonpack" Version="34.1.0">
+   <PACK Name="addonpack" Version="34.101.0">
    </PACK>
    <NODE id="4" nodename="Multiply (Transform)" systemname="Multiply (Transform)">
    <BOUNDS height="270" left="4125" top="1680" type="Node" width="495">
@@ -71,7 +71,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="4635" top="2205" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,1.00000,1.00000,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.00000,0.00000,0.00000,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="Color">
    </PIN>
@@ -81,7 +81,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="5670" top="1515" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Input Enum" slicecount="1" visible="1" values="RenderNoDiagonals">
+   <PIN pinname="Input Enum" slicecount="1" visible="1" values="Render">
    </PIN>
    </NODE>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="14" systemname="IOBox (Value Advanced)">
@@ -107,9 +107,9 @@
    </BOUNDS>
    <PIN pinname="Transform Out" visible="1">
    </PIN>
-   <PIN pinname="Y" slicecount="1" values="1">
+   <PIN pinname="Y" slicecount="1" values="2">
    </PIN>
-   <PIN pinname="X" slicecount="1" values="1">
+   <PIN pinname="X" slicecount="1" values="2">
    </PIN>
    <PIN pinname="Transform In" visible="1">
    </PIN>
@@ -133,6 +133,20 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="17" srcpinname="Y Output Value" dstnodeid="15" dstpinname="Z">
+   </LINK>
+   <NODE nodename="IOBox (Node)" componentmode="InABox" id="18" systemname="IOBox (Node)">
+   <BOUNDS type="Box" left="5340" top="810" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="5340" top="810" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Node" slicecount="1" visible="1" values="||">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Source">
+   </PIN>
+   <PIN pinname="Output Node" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="4" srcpinname="Transform Out" dstnodeid="3" dstpinname="Source">
    </LINK>
    <NODE systemname="GS_SuppressDiagonals (DX11.Effect)" filename="..\dx11\GSSuppressDiagonals\GS_SuppressDiagonals.fx" nodename="GS_SuppressDiagonals (DX11.Effect)" componentmode="Hidden" id="2">
    <BOUNDS type="Node" left="465" top="3270" width="6315" height="270">
@@ -164,18 +178,14 @@
    </LINK>
    <LINK srcnodeid="15" srcpinname="Transform Out" dstnodeid="2" dstpinname="Transform In">
    </LINK>
-   <NODE nodename="IOBox (Node)" componentmode="InABox" id="18" systemname="IOBox (Node)">
-   <BOUNDS type="Box" left="5340" top="810" width="795" height="240">
+   <NODE systemname="Rasterizer (DX11.RenderState)" filename="%VVVV%\packs\dx11\nodes\plugins\VVVV.DX11.Nodes.dll" nodename="Rasterizer (DX11.RenderState)" componentmode="Hidden" id="19">
+   <BOUNDS type="Node" left="1035" top="840" width="780" height="270">
    </BOUNDS>
-   <BOUNDS type="Node" left="5340" top="810" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Input Node" slicecount="1" visible="1" values="||">
+   <PIN pinname="Render State" visible="1" slicecount="1" values="||">
    </PIN>
-   <PIN pinname="Descriptive Name" slicecount="1" values="Source">
-   </PIN>
-   <PIN pinname="Output Node" visible="1">
+   <PIN pinname="Mode" slicecount="1" values="FrontCullSimple">
    </PIN>
    </NODE>
-   <LINK srcnodeid="4" srcpinname="Transform Out" dstnodeid="3" dstpinname="Source">
+   <LINK srcnodeid="19" srcpinname="Render State" dstnodeid="2" dstpinname="Render State">
    </LINK>
    </PATCH>
