@@ -83,6 +83,8 @@
    </BOUNDS>
    <PIN pinname="Input Enum" slicecount="1" visible="1" values="Render">
    </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Technique">
+   </PIN>
    </NODE>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="14" systemname="IOBox (Value Advanced)">
    <BOUNDS type="Box" left="7035" top="2850" width="480" height="480">
@@ -107,9 +109,9 @@
    </BOUNDS>
    <PIN pinname="Transform Out" visible="1">
    </PIN>
-   <PIN pinname="Y" slicecount="1" values="1.5">
+   <PIN pinname="Y" slicecount="1" values="1.5" visible="1">
    </PIN>
-   <PIN pinname="X" slicecount="1" values="1.5">
+   <PIN pinname="X" slicecount="1" values="1.5" visible="1">
    </PIN>
    <PIN pinname="Transform In" visible="1">
    </PIN>
@@ -119,11 +121,11 @@
    <LINK srcnodeid="3" srcpinname="Transform Out" dstnodeid="15" dstpinname="Transform In">
    </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="17" systemname="IOBox (Value Advanced)">
-   <BOUNDS type="Box" left="3105" top="660" width="795" height="240">
+   <BOUNDS type="Box" left="3105" top="630" width="795" height="240">
    </BOUNDS>
-   <BOUNDS type="Node" left="3105" top="660" width="0" height="0">
+   <BOUNDS type="Node" left="3105" top="630" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.001">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -134,18 +136,6 @@
    </NODE>
    <LINK srcnodeid="17" srcpinname="Y Output Value" dstnodeid="15" dstpinname="Z">
    </LINK>
-   <NODE nodename="IOBox (Node)" componentmode="InABox" id="18" systemname="IOBox (Node)">
-   <BOUNDS type="Box" left="5340" top="810" width="795" height="240">
-   </BOUNDS>
-   <BOUNDS type="Node" left="5340" top="810" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Input Node" slicecount="1" visible="1" values="||">
-   </PIN>
-   <PIN pinname="Descriptive Name" slicecount="1" values="Source">
-   </PIN>
-   <PIN pinname="Output Node" visible="1">
-   </PIN>
-   </NODE>
    <LINK srcnodeid="4" srcpinname="Transform Out" dstnodeid="3" dstpinname="Source">
    </LINK>
    <NODE systemname="GS_SuppressDiagonals (DX11.Effect)" filename="..\dx11\GSSuppressDiagonals\GS_SuppressDiagonals.fx" nodename="GS_SuppressDiagonals (DX11.Effect)" componentmode="Hidden" id="2">
@@ -187,5 +177,25 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="19" srcpinname="Render State" dstnodeid="2" dstpinname="Render State">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="20" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="2220" top="630" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="2220" top="630" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.5">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Scale">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="20" srcpinname="Y Output Value" dstnodeid="15" dstpinname="X">
+   </LINK>
+   <LINK srcnodeid="20" srcpinname="Y Output Value" dstnodeid="15" dstpinname="Y">
    </LINK>
    </PATCH>
