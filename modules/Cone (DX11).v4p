@@ -109,9 +109,9 @@
    </BOUNDS>
    <PIN pinname="Transform Out" visible="1">
    </PIN>
-   <PIN pinname="Y" slicecount="1" values="1.5" visible="1">
+   <PIN pinname="Y" slicecount="1" visible="1" values="1.5">
    </PIN>
-   <PIN pinname="X" slicecount="1" values="1.5" visible="1">
+   <PIN pinname="X" slicecount="1" visible="1" values="1.5">
    </PIN>
    <PIN pinname="Transform In" visible="1">
    </PIN>
@@ -183,7 +183,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="2220" top="630" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.5">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.05">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>

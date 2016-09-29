@@ -121,9 +121,9 @@
    <LINK srcnodeid="3" srcpinname="Transform Out" dstnodeid="15" dstpinname="Transform In">
    </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="17" systemname="IOBox (Value Advanced)">
-   <BOUNDS type="Box" left="3105" top="660" width="795" height="240">
+   <BOUNDS type="Box" left="3105" top="630" width="795" height="240">
    </BOUNDS>
-   <BOUNDS type="Node" left="3105" top="660" width="0" height="0">
+   <BOUNDS type="Node" left="3105" top="630" width="0" height="0">
    </BOUNDS>
    <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.001">
    </PIN>
@@ -179,9 +179,9 @@
    <LINK srcnodeid="19" srcpinname="Render State" dstnodeid="2" dstpinname="Render State">
    </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="20" systemname="IOBox (Value Advanced)">
-   <BOUNDS type="Box" left="2625" top="990" width="795" height="240">
+   <BOUNDS type="Box" left="2220" top="630" width="795" height="240">
    </BOUNDS>
-   <BOUNDS type="Node" left="2625" top="990" width="0" height="0">
+   <BOUNDS type="Node" left="2220" top="630" width="0" height="0">
    </BOUNDS>
    <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.5">
    </PIN>
