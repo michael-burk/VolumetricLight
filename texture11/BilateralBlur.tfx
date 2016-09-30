@@ -5,7 +5,6 @@
 
 SamplerState blurSampler : register(s0); 
 Texture2D linearDepth;
-Texture2D control;
 Texture2D tex: PREVIOUS;
 Texture2D tex0: PREVIOUS;
 SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=WRAP;AddressV=WRAP;};
@@ -36,8 +35,7 @@ float4 blurX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 					lod=map.x*(Factor)*log2(max(R.x,R.y));
 					float4 c=0;
 					float2 off=.5/R*pow(2,lod)*saturate(lod);
-	    			float zFactor = control.SampleLevel(blurSampler, x, 0).a;
-	    	    	float2 sampleOffset = float2(texelsize*samplerOffsets[i], 0.0f)*Factor*zFactor; 
+	    	    	float2 sampleOffset = float2(texelsize*samplerOffsets[i], 0.0f)*Factor; 
 	    	    	float2 samplePos = x + sampleOffset; 
 	    	    	//Ermittle die Sampling-Position für den Gaussian-Blur. 
 	    	    	
@@ -78,8 +76,7 @@ float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	    	for(unsigned int i = 0; i < numSamples; i++) 
 	    	{ 		
 	    			
-	    			float zFactor = control.SampleLevel(blurSampler, x, 0).a;
-	    	    	float2 sampleOffset = float2(0.0f, texelsize*samplerOffsets[i])*Factor*zFactor; 
+	    	    	float2 sampleOffset = float2(0.0f, texelsize*samplerOffsets[i])*Factor; 
 	    	    	float2 samplePos = x + sampleOffset; 
 	    	    	//Ermittle die Sampling-Position für den Gaussian-Blur. 
 	    	    	
@@ -111,7 +108,7 @@ technique10 RGB{
 	pass P2{SetPixelShader(CompileShader(ps_4_0,blurY()));}
 	pass P3{SetPixelShader(CompileShader(ps_4_0,blurX()));}
 	pass P4{SetPixelShader(CompileShader(ps_4_0,blurY()));}
-//	pass P5{SetPixelShader(CompileShader(ps_4_0,blurX()));}
-//	pass P6{SetPixelShader(CompileShader(ps_4_0,blurY()));}
+	pass P5{SetPixelShader(CompileShader(ps_4_0,blurX()));}
+	pass P6{SetPixelShader(CompileShader(ps_4_0,blurY()));}
 }
 

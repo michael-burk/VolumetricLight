@@ -16,7 +16,6 @@ float3 lightPos;
 float3 lightDir;
 float farPlane;
 float fade;
-float fadeZ;
 //float blurFactor;
 static const float G_SCATTERING = -.2;
 static const float PI = 3.14159265f;
@@ -51,43 +50,39 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 	startPosition += step * noiseTex.Sample(s0,x).r;
 	
-	
 	float3 currentPosition = startPosition;
 	
 	float3 accumFog = 0.0f.xxx;
 	float shadowMapValue;
 	float4 worldInShadowCameraSpace;
-	float z = 0;
-	float z1 = 1;
+
 	float distFactor;
+	float3 lightToObject;
 	for (int i = 0; i < NB_STEPS; i++)
 	{
 		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
 		worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
-			
+				
 		shadowMapValue = shadowMap.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).r;
+			
+		lightToObject = lightPos - currentPosition ;
 		
-	float3 lightToObject = lightPos - currentPosition ;
-	if (shadowMapValue > worldInShadowCameraSpace.z && dot(lightToObject,lightDir) <= -.1)
-	{	
+		if (shadowMapValue > worldInShadowCameraSpace.z && dot(lightToObject,lightDir) <= -.1)
+		{	
+			distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), shadowVP).z / farPlane * fade, 3));
+			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor * brightness *
+			colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).rgb*distFactor * brightness;
+			
+		}
 		
-		distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), shadowVP).z / farPlane * fade, 3));
-		accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor * brightness *
-		colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).rgb*distFactor * brightness;
-
-		//Save z for distance blur
-		if(z == 0) z = mul(float4(currentPosition, 1.0f), shadowVP).z;
-		if(z1 == 1) z1 = 1-saturate(length(lightDir-rayDirection) -.9 ) ;
+			currentPosition += step;
 		
-	}
-		currentPosition += step;
 	}
 	
 	accumFog /= NB_STEPS ;
 		
 	
 	float4 returnVal = float4(accumFog,1)*Color;
-	returnVal.a = .5 +(  pow(z*.05*fadeZ,5)) * (z1);
 	return returnVal;
 
 }
@@ -96,6 +91,4 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 technique10 Volumetric_Light{
 	pass P1<string format="R32G32B32A32_float";>{SetPixelShader(CompileShader(ps_5_0,VolumetricLight()));}
-	//pass P2{SetPixelShader(CompileShader(ps_4_0,blurX()));}
-	//pass P3{SetPixelShader(CompileShader(ps_4_0,blurY()));}
 }
