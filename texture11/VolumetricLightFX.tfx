@@ -1,4 +1,3 @@
-
 Texture2D tex0: PREVIOUS;
 SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=BORDER;AddressV=BORDER;};
 float2 R:TARGETSIZE;

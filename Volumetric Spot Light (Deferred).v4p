@@ -739,9 +739,9 @@
    <NODE nodename="IOBox (String)" componentmode="InABox" id="359" systemname="IOBox (String)">
    <BOUNDS type="Node" left="555" top="480" width="1335" height="270">
    </BOUNDS>
-   <BOUNDS type="Box" left="555" top="480" width="2490" height="480">
+   <BOUNDS type="Box" left="555" top="480" width="4380" height="570">
    </BOUNDS>
-   <PIN pinname="Input String" visible="0" slicecount="1" values="|Volumetric Light|">
+   <PIN pinname="Input String" visible="0" slicecount="1" values="|Volumetric Spot Light (Deferred)|">
    </PIN>
    <PIN pinname="Output String" visible="0">
    </PIN>
