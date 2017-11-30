@@ -18,7 +18,7 @@ cbuffer controls:register(b0){
 
 float4 blurX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	const float texelsize = 1.0f / R.x;//Als erstes ermitteln wir die horizontale Texelsize. 
-	const  int numSamples = 9;
+	const  uint numSamples = 9;
 	const float samplerOffsets[numSamples] = 
 	    	{ -8.0f, -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f, 8.0f }; 
 	    	//Wie bereits erwähnt überspringen wir jeden zweiten Pixel. 
@@ -28,10 +28,11 @@ float4 blurX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	    	float compareDepth = linearDepth.Sample(blurSampler, x).r; 
 	    	//Tiefe des momentanen Pixels 
 	    	
-	    	for(unsigned int i = 0; i < numSamples; i++) 
+	    	for(uint i = 0; i < numSamples; i++) 
 	    	{ 		
 	    			float lod=log2(max(R.x,R.y));
-					float4 map=linearDepth.SampleLevel(s0,x,0);map=max(map.x,max(map.y,map.z))*map.a;
+					float4 map=linearDepth.SampleLevel(s0,x,0);
+	    			map=max(map.x,max(map.y,map.z))*map.a;
 					lod=map.x*(Factor)*log2(max(R.x,R.y));
 					float4 c=0;
 					float2 off=.5/R*pow(2,lod)*saturate(lod);
@@ -63,7 +64,7 @@ float4 blurX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	const float texelsize = 1.0f / R.x;//Als erstes ermitteln wir die horizontale Texelsize. 
-	const  int numSamples = 9;
+	const  uint numSamples = 9;
 	const float samplerOffsets[numSamples] = 
 	    	{ -8.0f, -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f, 8.0f}; 
 	    	//Wie bereits erwähnt überspringen wir jeden zweiten Pixel. 
@@ -73,7 +74,7 @@ float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	    	float compareDepth = linearDepth.Sample(blurSampler, x).r; 
 	    	//Tiefe des momentanen Pixels 
 	    	
-	    	for(unsigned int i = 0; i < numSamples; i++) 
+	    	for(uint i = 0; i < numSamples; i++) 
 	    	{ 		
 	    			
 	    	    	float2 sampleOffset = float2(0.0f, texelsize*samplerOffsets[i])*Factor; 
@@ -106,9 +107,9 @@ float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 technique10 RGB{
 	pass P1{SetPixelShader(CompileShader(ps_4_0,blurX()));}
 	pass P2{SetPixelShader(CompileShader(ps_4_0,blurY()));}
-	pass P3{SetPixelShader(CompileShader(ps_4_0,blurX()));}
-	pass P4{SetPixelShader(CompileShader(ps_4_0,blurY()));}
-	pass P5{SetPixelShader(CompileShader(ps_4_0,blurX()));}
-	pass P6{SetPixelShader(CompileShader(ps_4_0,blurY()));}
+//	pass P3{SetPixelShader(CompileShader(ps_4_0,blurX()));}
+//	pass P4{SetPixelShader(CompileShader(ps_4_0,blurY()));}
+//	pass P5{SetPixelShader(CompileShader(ps_4_0,blurX()));}
+//	pass P6{SetPixelShader(CompileShader(ps_4_0,blurY()));}
 }
 

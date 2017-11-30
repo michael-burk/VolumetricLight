@@ -11,6 +11,7 @@ Texture2D colTex <string uiname="colTex";>;
 
 float4 Color <bool color=true;>;
 float3 camPos;
+float3 camDir;
 float3 lightPos;
 float3 lightDir;
 float farPlane;
