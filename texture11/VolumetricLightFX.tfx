@@ -58,7 +58,6 @@ float3 UVtoEYE(float2 UV){
 
 float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
-	
 // World Pos Approach
 		
 //			float3 startPosition = tVI[3].xyz;
@@ -78,9 +77,9 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		float3 rayDirection = UVtoEYE(x.xy);
 	
 	
-	float3 step = rayDirection * stepLength;
+	float3 steppy = rayDirection * stepLength;
 
-	startPosition += step * noiseTex.Sample(s0,x).r;
+	startPosition += steppy * noiseTex.Sample(s0,x).r;
 	
 	float3 currentPosition = startPosition;
 	
@@ -92,7 +91,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	float3 lightToObject;
 	for (int i = 0; i < NB_STEPS; i++)
 	{	
-		
+
 		if( length(currentPosition - endRayPosition) <= stepLength) break;
 		
 		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
@@ -101,7 +100,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		shadowMapValue = shadowMap.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).r;
 			
 		lightToObject = lightPos - currentPosition ;
-		
+
 		if (shadowMapValue > worldInShadowCameraSpace.z && dot(lightToObject,lightDir) <= -.1)
 		{	
 			distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), shadowVP).z / farPlane * fade, 3));
@@ -114,7 +113,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			
 		}
 		
-			currentPosition += step;
+			currentPosition += steppy;
 		
 	}
 	
