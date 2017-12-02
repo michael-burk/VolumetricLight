@@ -4,24 +4,48 @@ float2 R:TARGETSIZE;
 
 Texture2D shadowMap <string uiname="shadowMap";>;
 Texture2D depthMap <string uiname="depthMap";>;
-Texture2D worldPosMap <string uiname="worldPosMap";>;
+//Texture2D worldPosMap <string uiname="worldPosMap";>;
 Texture2D noiseTex <string uiname="noise";>;
 
 Texture2D colTex <string uiname="colTex";>;
 
+float4x4 tVI;
+float4x4 tPI;
+float4x4 tP;
+float4x4 tVP;
+
 float4 Color <bool color=true;>;
-float3 camPos;
-float3 camDir;
+//float3 camDir;
 float3 lightPos;
 float3 lightDir;
 float farPlane;
 float fade;
-//float blurFactor;
+
 static const float G_SCATTERING = -.2;
 static const float PI = 3.14159265f;
-int NB_STEPS = 10;
+
+int NB_STEPS = 32;
+
 float4x4 shadowVP;
+
 float brightness = 1;
+float stepLength = 1;
+
+float4 UVZtoVIEW(float2 UV,float z){
+	float4 p=mul(float4(UV.x*2-1,1-2*UV.y,0,1.0),tPI);
+	float ld = tP._43 / (z - tP._33);
+	p=float4(p.xy*ld,ld,1.0);
+	return p; 
+}
+float4 UVZtoWORLD(float2 UV,float z){
+	return mul(UVZtoVIEW(UV,z),tVI); 
+}
+
+
+float3 UVtoEYE(float2 UV){
+	return normalize( mul(float4(mul(float4((UV.xy*2-1)*float2(1,-1),0,1),tPI).xy,1,0),tVI).xyz);
+}
+
 
 	// Mie scaterring approximated with Henyey-Greenstein phase function.
 	float ComputeScattering(float lightDotView)
@@ -34,17 +58,25 @@ float brightness = 1;
 
 float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
-
-	float3 startPosition = camPos;
-	float3 endRayPosition = (worldPosMap.Sample(s0,x).xyz);
-
-	float3 rayVector = endRayPosition - startPosition;
-	 
-	float rayLength = length(rayVector);
 	
-	float3 rayDirection = rayVector / rayLength;
-	 
-	float stepLength = rayLength / NB_STEPS;
+// World Pos Approach
+		
+//			float3 startPosition = tVI[3].xyz;
+//			float3 endRayPosition = (worldPosMap.Sample(s0,x).xyz);
+//			float3 endRayPosition =  UVZtoWORLD(x,depthMap.Sample(s0,x).r).xyz;
+//			float3 rayVector = endRayPosition - startPosition;
+//			float rayLength = length(rayVector);
+//			float3 rayDirection = rayVector / rayLength;
+//			float stepLength = rayLength / NB_STEPS;
+	
+// UV to Eye Approach
+	
+		float3 endRayPosition =  UVZtoWORLD(x,depthMap.Sample(s0,x).r).xyz;
+		// Ray Origin
+		float3 startPosition = tVI[3].xyz;
+		// Ray Direction
+		float3 rayDirection = UVtoEYE(x.xy);
+	
 	
 	float3 step = rayDirection * stepLength;
 
@@ -59,19 +91,26 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	float distFactor;
 	float3 lightToObject;
 	for (int i = 0; i < NB_STEPS; i++)
-	{
+	{	
+		
+		if( length(currentPosition - endRayPosition) <= stepLength) break;
+		
 		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
 		worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
-				
-		shadowMapValue = shadowMap.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).r;
+		
+		shadowMapValue = shadowMap.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).r;
 			
 		lightToObject = lightPos - currentPosition ;
 		
 		if (shadowMapValue > worldInShadowCameraSpace.z && dot(lightToObject,lightDir) <= -.1)
 		{	
 			distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), shadowVP).z / farPlane * fade, 3));
-			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor * brightness *
-			colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).rgb*distFactor * brightness;
+			
+//			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor * brightness *
+//			colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).rgb*distFactor * brightness;
+
+			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * pow( distFactor,1) * brightness *
+			colTex.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).rgb*distFactor * brightness;
 			
 		}
 		
@@ -82,8 +121,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	accumFog /= NB_STEPS ;
 		
 	
-	float4 returnVal = float4(accumFog,1)*Color;
-	return returnVal;
+	return float4(accumFog,1)*Color;
 
 }
 
