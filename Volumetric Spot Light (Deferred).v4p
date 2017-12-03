@@ -31,7 +31,7 @@
    </PIN>
    <PIN pinname="Clear Depth" slicecount="1" values="1">
    </PIN>
-   <PIN pinname="Background Color" slicecount="1" visible="1" values="|0.00000,0.00000,0.00000,1.00000|">
+   <PIN pinname="Background Color" slicecount="1" visible="1" values="|0.67503,0.44764,1.00000,1.00000|">
    </PIN>
    <PIN pinname="Texture ScaleXY" slicecount="1" values="1">
    </PIN>
@@ -69,9 +69,9 @@
    </PIN>
    <PIN pinname="Projection" visible="1">
    </PIN>
-   <PIN pinname="Initial Pitch" slicecount="1" visible="1" values="0.15">
+   <PIN pinname="Initial Pitch" slicecount="1" visible="1" values="0.25">
    </PIN>
-   <PIN pinname="Initial Yaw" slicecount="1" visible="1" values="-0.2">
+   <PIN pinname="Initial Yaw" slicecount="1" visible="1" values="0">
    </PIN>
    <PIN pinname="Initial FOV" slicecount="1" visible="1" values="0.31">
    </PIN>
@@ -119,7 +119,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="15045" top="1545" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.15">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -225,11 +225,11 @@
    </BOUNDS>
    <PIN pinname="Light DirectionXYZ" visible="1" slicecount="3" values="0.966671884059906,-0.0627905204892158,-0.24819914996624">
    </PIN>
-   <PIN pinname="Diffuse Color" slicecount="1" values="|0.30213,0.30213,0.30213,1.00000|">
+   <PIN pinname="Diffuse Color" slicecount="1" values="|0.48563,0.48563,0.48563,1.00000|">
    </PIN>
-   <PIN pinname="Specular Color" slicecount="1" values="|0.95551,0.95551,0.95551,1.00000|">
+   <PIN pinname="Specular Color" slicecount="1" values="|0.34662,0.34662,0.34662,1.00000|">
    </PIN>
-   <PIN pinname="Ambient Color" slicecount="1" values="|0.01112,0.01112,0.01112,1.00000|">
+   <PIN pinname="Ambient Color" slicecount="1" values="|0.55792,0.55792,0.55792,1.00000|" visible="1">
    </PIN>
    <PIN pinname="Transform In" slicecount="1" visible="1" values="||">
    </PIN>
@@ -339,7 +339,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="12660" top="10245" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="4">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="6.41">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -365,7 +365,7 @@
    </PIN>
    </NODE>
    <NODE systemname="Halo (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Source\Halo.tfx" nodename="Halo (DX11.TextureFX)" componentmode="Hidden" id="308">
-   <BOUNDS type="Node" left="15120" top="10440" width="100" height="100">
+   <BOUNDS type="Node" left="14835" top="10665" width="100" height="100">
    </BOUNDS>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
@@ -375,9 +375,9 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="308" srcpinname="Texture Out" dstnodeid="307" dstpinname="Texture In 2" linkstyle="Bezier">
-   <LINKPOINT x="15180" y="11573">
+   <LINKPOINT x="14990" y="11723">
    </LINKPOINT>
-   <LINKPOINT x="16710" y="11573">
+   <LINKPOINT x="16615" y="11648">
    </LINKPOINT>
    </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="338" systemname="IOBox (Value Advanced)">
@@ -1047,6 +1047,20 @@
    <LINK srcnodeid="409" srcpinname="Texture Out" dstnodeid="268" dstpinname="Texture In">
    </LINK>
    <LINK srcnodeid="14" srcpinname="Geometry Out" dstnodeid="280" dstpinname="Geometry">
+   </LINK>
+   <NODE nodename="IOBox (Color)" componentmode="InABox" id="419">
+   <BOUNDS type="Box" left="7230" top="2430" width="2250" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="7230" top="2430" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.73031,0.44764,1.00000,1.00000|">
+   </PIN>
+   <PIN pinname="Color Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="419" srcpinname="Color Output" dstnodeid="11" dstpinname="Background Color">
+   </LINK>
+   <LINK srcnodeid="419" srcpinname="Color Output" dstnodeid="280" dstpinname="Ambient Color">
    </LINK>
    <LINK srcnodeid="307" srcpinname="Texture Out" dstnodeid="288" dstpinname="colTex">
    </LINK>
