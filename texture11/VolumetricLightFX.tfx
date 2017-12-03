@@ -1,23 +1,22 @@
-Texture2D tex0: PREVIOUS;
+//Texture2D tex0: PREVIOUS;
+
 SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=BORDER;AddressV=BORDER;};
+
 float2 R:TARGETSIZE;
 
 Texture2D shadowMap <string uiname="shadowMap";>;
 Texture2D depthMap <string uiname="depthMap";>;
-//Texture2D worldPosMap <string uiname="worldPosMap";>;
 Texture2D noiseTex <string uiname="noise";>;
+
+//Texture2D worldPosMap <string uiname="worldPosMap";>;
 
 Texture2D colTex <string uiname="colTex";>;
 
 float4x4 tVI;
 float4x4 tPI;
 float4x4 tP;
-float4x4 tVP;
 
 float4 Color <bool color=true;>;
-//float3 camDir;
-float3 lightPos;
-float3 lightDir;
 float farPlane;
 float fade;
 
@@ -26,7 +25,7 @@ static const float PI = 3.14159265f;
 
 int NB_STEPS = 32;
 
-float4x4 shadowVP;
+float4x4 lightVP;
 
 float brightness = 1;
 float stepLength = 1;
@@ -45,12 +44,10 @@ float4 UVZtoWORLD(float2 UV,float z){
 float3 UVtoEYE(float2 UV){
 	return normalize( mul(float4(mul(float4((UV.xy*2-1)*float2(1,-1),0,1),tPI).xy,1,0),tVI).xyz);
 }
-
-
 	// Mie scaterring approximated with Henyey-Greenstein phase function.
 	float ComputeScattering(float lightDotView)
 	{
-	float result = 1.0f - G_SCATTERING;
+	float result = 1.0f - G_SCATTERING /* * G_SCATTERING */;
 	result *= result;
 	result /= (4.0f * PI * pow(abs(1.0f + G_SCATTERING * G_SCATTERING - (2.0f * G_SCATTERING) * lightDotView), 1.5f));
 	return result;
@@ -76,6 +73,9 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		// Ray Direction
 		float3 rayDirection = UVtoEYE(x.xy);
 	
+//			float3 rayVector = float3(0,3.3722,-6.1340) - startPosition;
+//			float rayLength = length(rayVector);
+//			float stepLength = rayLength / NB_STEPS;
 	
 	float3 steppy = rayDirection * stepLength;
 
@@ -89,26 +89,26 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 	float distFactor;
 	float3 lightToObject;
+	
+//	float step = stepLength;
+
+	float3 lightDir = float3(lightVP._13, lightVP._23, lightVP._33);
+
+	
 	for (int i = 0; i < NB_STEPS; i++)
 	{	
-
+		
 		if( length(currentPosition - endRayPosition) <= stepLength) break;
 		
-		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), shadowVP);
+		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), lightVP);
 		worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 		
 		shadowMapValue = shadowMap.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).r;
-			
-		lightToObject = lightPos - currentPosition ;
 
-		if (shadowMapValue > worldInShadowCameraSpace.z && dot(lightToObject,lightDir) <= -.1)
+		if (shadowMapValue >= worldInShadowCameraSpace.z)
 		{	
-			distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), shadowVP).z / farPlane * fade, 3));
-			
-//			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx * pow(rayLength,.5)) * distFactor * brightness *
-//			colTex.Sample(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5).rgb*distFactor * brightness;
-
-			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * pow( distFactor,1) * brightness *
+			distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), lightVP).z / farPlane * fade, 3));
+			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * pow( distFactor,1) * brightness * stepLength *
 			colTex.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).rgb*distFactor * brightness;
 			
 		}
@@ -127,5 +127,5 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 
 technique10 Volumetric_Light{
-	pass P1<string format="R32G32B32A32_float";>{SetPixelShader(CompileShader(ps_5_0,VolumetricLight()));}
+	pass P1<string format="R16G16B16A16_float";>{SetPixelShader(CompileShader(ps_5_0,VolumetricLight()));}
 }

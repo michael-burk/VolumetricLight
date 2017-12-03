@@ -21,6 +21,7 @@ float4 blurX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	const  uint numSamples = 9;
 	const float samplerOffsets[numSamples] = 
 	    	{ -8.0f, -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f, 8.0f }; 
+//			{ -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f}; 
 	    	//Wie bereits erwähnt überspringen wir jeden zweiten Pixel. 
 	float4 result = 0.0f; 
 	float weightSum = 0.0f;
@@ -48,7 +49,7 @@ float4 blurX(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	    	    	//vom momentanen Sample zum Quellsample, desto kleiner die Wichtung. 
 	    	    	//0.0001 wird addiert um ein teilen durch 0 zu verhindern. 
 	    	    	
-	    	    	result += tex.SampleLevel(blurSampler, samplePos, 0)*weight;
+	    	    	result += tex.Sample(blurSampler, samplePos)*weight;
 	    	    	//Sample den Punkt und wichte ihn. 
 	    	    	
 	    	    	weightSum += weight; 
@@ -66,7 +67,8 @@ float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	const float texelsize = 1.0f / R.x;//Als erstes ermitteln wir die horizontale Texelsize. 
 	const  uint numSamples = 9;
 	const float samplerOffsets[numSamples] = 
-	    	{ -8.0f, -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f, 8.0f}; 
+	    	{ -8.0f, -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f, 8.0f};
+//			{ -6.0f, -4.0f, -2.0f, 0.0f, 2.0f, 4.0f, 6.0f}; 
 	    	//Wie bereits erwähnt überspringen wir jeden zweiten Pixel. 
 	float4 result = 0.0f; 
 	float weightSum = 0.0f;
@@ -89,7 +91,7 @@ float4 blurY(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	    	    	//vom momentanen Sample zum Quellsample, desto kleiner die Wichtung. 
 	    	    	//0.0001 wird addiert um ein teilen durch 0 zu verhindern. 
 	    	    	
-	    	    	result += tex.SampleLevel(blurSampler, samplePos, 0)*weight; 
+	    	    	result += tex.Sample(blurSampler, samplePos)*weight; 
 	    	    	//Sample den Punkt und wichte ihn. 
 	    	    	
 	    	    	weightSum += weight; 
