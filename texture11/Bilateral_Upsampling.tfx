@@ -22,19 +22,22 @@ struct vso
 
 /* textures */
 Texture2D<float> t_depth;
-SamplerState s_depth;
+//SamplerState s_depth;
 
 //Texture2D<float4> t_norm;
 //SamplerState s_norm;
 
 Texture2D<float> t_depth_hires; /* 2x size of source */
-SamplerState s_depth_hires;
+//SamplerState s_depth_hires;
 
 //Texture2D<float4> t_norm_hires; /* 2x size of source */
 //SamplerState s_norm_hires;
 
 Texture2D<float4> t_tex;    /* texture to be upsampled */
-SamplerState s_tex;
+SamplerState s_tex <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=CLAMP;AddressV=CLAMP;};
+SamplerState s_depth_hires <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=CLAMP;AddressV=CLAMP;};
+SamplerState s_depth <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=CLAMP;AddressV=CLAMP;};
+
 
 /* uniforms */
 float2 c_texelsize;

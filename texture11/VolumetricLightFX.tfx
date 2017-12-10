@@ -2,11 +2,12 @@ SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MI
 SamplerState s1 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=WRAP;AddressV=WRAP;};
 float2 R:TARGETSIZE;
 
-Texture2D shadowMap[32] <string uiname="shadowMap";>;
+Texture2DArray shadowMap <string uiname="shadowMap";>;
 Texture2D depthMap <string uiname="depthMap";>;
 Texture2D noiseTex <string uiname="noise";>;
 
-Texture2D colTex[32] <string uiname="colTex";>;
+StructuredBuffer <float4> LightColor;
+Texture2DArray colTex <string uiname="colTex";>;
 
 float4x4 tVI;
 float4x4 tPI;
@@ -86,7 +87,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		if( length(currentPosition - endRayPosition) <= stepLength) break;		
 					
 			
-		[unroll]
+//		[unroll]
 		for (uint j = 0; j < lightCount; j++)
 		{
 			
@@ -95,14 +96,14 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 		
 		
-			shadowMapValue = shadowMap[j].SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).r;
+			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).r;
 		
 			if (shadowMapValue >= worldInShadowCameraSpace.z)
 			{	
 //				distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), lightVP[j]).z / farPlane[j] * fade, 3));
 				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPosition - lPos[j])), 1);
 				accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * distFactor * brightness * stepLength  *
-				colTex[j].SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).rgb * distFactor * 100;
+				colTex.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).rgb * distFactor * LightColor[j].rgb *100;
 			}
 			
 		}
