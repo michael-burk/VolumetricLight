@@ -229,7 +229,7 @@
    </PIN>
    <PIN pinname="Specular Color" slicecount="1" values="|0.34662,0.34662,0.34662,1.00000|">
    </PIN>
-   <PIN pinname="Ambient Color" slicecount="1" values="|0.55792,0.55792,0.55792,1.00000|" visible="1">
+   <PIN pinname="Ambient Color" slicecount="1" visible="1" values="|0.55792,0.55792,0.55792,1.00000|">
    </PIN>
    <PIN pinname="Transform In" slicecount="1" visible="1" values="||">
    </PIN>
@@ -339,7 +339,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="12660" top="10245" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="6.41">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="4.11">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -451,9 +451,9 @@
    </PIN>
    </NODE>
    <NODE nodename="IOBox (String)" componentmode="InABox" id="360" systemname="IOBox (String)">
-   <BOUNDS type="Node" left="555" top="3255" width="285" height="270">
+   <BOUNDS type="Node" left="555" top="3225" width="285" height="270">
    </BOUNDS>
-   <BOUNDS type="Box" left="555" top="3255" width="2370" height="3900">
+   <BOUNDS type="Box" left="555" top="3225" width="2370" height="3900">
    </BOUNDS>
    <PIN pinname="Input String" visible="0" slicecount="1" values="|1.&cr;&lf;Normal renderer for high res depth and color channel&cr;&lf;&cr;&lf;2.&cr;&lf;Half res (not necessarily) depth of scene rendered from light VP|">
    </PIN>
@@ -1062,6 +1062,6 @@
    </LINK>
    <LINK srcnodeid="419" srcpinname="Color Output" dstnodeid="280" dstpinname="Ambient Color">
    </LINK>
-   <LINK srcnodeid="307" srcpinname="Texture Out" dstnodeid="288" dstpinname="colTex">
+   <LINK srcnodeid="308" srcpinname="Texture Out" dstnodeid="288" dstpinname="colTex">
    </LINK>
    </PATCH>

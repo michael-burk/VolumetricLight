@@ -1,35 +1,33 @@
-//Texture2D tex0: PREVIOUS;
-
 SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=BORDER;AddressV=BORDER;};
 SamplerState s1 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=WRAP;AddressV=WRAP;};
 float2 R:TARGETSIZE;
 
-Texture2D shadowMap <string uiname="shadowMap";>;
+Texture2D shadowMap[32] <string uiname="shadowMap";>;
 Texture2D depthMap <string uiname="depthMap";>;
 Texture2D noiseTex <string uiname="noise";>;
 
-Texture3D noiseSDF;
-//Texture2D worldPosMap <string uiname="worldPosMap";>;
-
-Texture2D colTex <string uiname="colTex";>;
+Texture2D colTex[32] <string uiname="colTex";>;
 
 float4x4 tVI;
 float4x4 tPI;
 float4x4 tP;
 
 float4 Color <bool color=true;>;
-float farPlane;
+StructuredBuffer <float> farPlane;
+StructuredBuffer <float3> lPos;
 float fade;
 
 static const float G_SCATTERING = -.2;
 static const float PI = 3.14159265f;
 
-int NB_STEPS = 32;
+uint NB_STEPS = 32;
 
-float4x4 lightVP;
+StructuredBuffer <float4x4> lightVP;
 
 float brightness = 1;
 float stepLength = 1;
+
+uint lightCount = 0;
 
 float4 UVZtoVIEW(float2 UV,float z){
 	float4 p=mul(float4(UV.x*2-1,1-2*UV.y,0,1.0),tPI);
@@ -54,18 +52,10 @@ float3 UVtoEYE(float2 UV){
 	return result;
 	}
 
+
+
 float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
-// World Pos Approach
-		
-//			float3 startPosition = tVI[3].xyz;
-//			float3 endRayPosition = (worldPosMap.Sample(s0,x).xyz);
-//			float3 endRayPosition =  UVZtoWORLD(x,depthMap.Sample(s0,x).r).xyz;
-//			float3 rayVector = endRayPosition - startPosition;
-//			float rayLength = length(rayVector);
-//			float3 rayDirection = rayVector / rayLength;
-//			float stepLength = rayLength / NB_STEPS;
-	
 // UV to Eye Approach
 	
 		float3 endRayPosition =  UVZtoWORLD(x,depthMap.Sample(s0,x).r).xyz;
@@ -73,10 +63,6 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		float3 startPosition = tVI[3].xyz;
 		// Ray Direction
 		float3 rayDirection = UVtoEYE(x.xy);
-	
-//			float3 rayVector = float3(0,3.3722,-6.1340) - startPosition;
-//			float rayLength = length(rayVector);
-//			float stepLength = rayLength / NB_STEPS;
 	
 	float3 steppy = rayDirection * stepLength;
 
@@ -90,28 +76,37 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 
 	float distFactor;
 	float3 lightToObject;
-	
-//	float step = stepLength;
 
-	float3 lightDir = float3(lightVP._13, lightVP._23, lightVP._33);
+	float3 lightDir = 0;
 
 	
-	for (int i = 0; i < NB_STEPS; i++)
+	for (uint i = 0; i < NB_STEPS; i++)
 	{	
 		
-		if( length(currentPosition - endRayPosition) <= stepLength) break;
+		if( length(currentPosition - endRayPosition) <= stepLength) break;		
+					
+			
+		[unroll]
+		for (uint j = 0; j < lightCount; j++)
+		{
+			
+			lightDir = float3(lightVP[j]._13, lightVP[j]._23, lightVP[j]._33);
+			worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), lightVP[j]);
+			worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 		
-		worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), lightVP);
-		worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 		
-		shadowMapValue = shadowMap.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).r;
-
-		if (shadowMapValue >= worldInShadowCameraSpace.z)
-		{	
-			distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), lightVP).z / farPlane * fade, 3));
-			accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * pow( distFactor,1) * brightness * stepLength * saturate(noiseSDF.SampleLevel(s1,currentPosition*.15 + .5,0).r)  *
-			colTex.SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).rgb*distFactor * brightness;
+			shadowMapValue = shadowMap[j].SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).r;
+		
+			if (shadowMapValue >= worldInShadowCameraSpace.z)
+			{	
+//				distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), lightVP[j]).z / farPlane[j] * fade, 3));
+				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPosition - lPos[j])), 1);
+				accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * distFactor * brightness * stepLength  *
+				colTex[j].SampleLevel(s0,float2(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1)*.5,0).rgb * distFactor * 100;
+			}
+			
 		}
+					
 		
 			currentPosition += steppy;
 		
