@@ -13,9 +13,10 @@ float4x4 tVI;
 float4x4 tPI;
 float4x4 tP;
 
-float4 Color <bool color=true;>;
 StructuredBuffer <float> farPlane;
 StructuredBuffer <float3> lPos;
+StructuredBuffer <int> LightType;
+
 float fade;
 
 static const float G_SCATTERING = -.2;
@@ -79,22 +80,33 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	float3 lightToObject;
 
 	float3 lightDir = 0;
-
+	float3 spotTex = 1;
 	
 	for (uint i = 0; i < NB_STEPS; i++)
 	{	
-		
 		if( length(currentPosition - endRayPosition) <= stepLength) break;		
-					
-			
-//		[unroll]
+//			uint j = 1;				
 		for (uint j = 0; j < lightCount; j++)
 		{
 			
 			lightDir = float3(lightVP[j]._13, lightVP[j]._23, lightVP[j]._33);
 			worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), lightVP[j]);
 			worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
-		
+			
+			
+			switch(LightType[j]){
+				case 0:
+						spotTex = 1;
+						break;
+				case 1:
+						spotTex = colTex.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).rgb;
+						break;
+				case 2:
+						spotTex = 1;
+						break;
+			}
+			
+
 		
 			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).r;
 		
@@ -102,8 +114,8 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			{	
 //				distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), lightVP[j]).z / farPlane[j] * fade, 3));
 				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPosition - lPos[j])), 1);
-				accumFog += (ComputeScattering(dot(rayDirection, lightDir)).xxx) * distFactor * brightness * stepLength  *
-				colTex.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).rgb * distFactor * LightColor[j].rgb *100;
+				accumFog += ComputeScattering(dot(rayDirection, lightDir)).r * distFactor * brightness * stepLength  *
+				spotTex.rgb * LightColor[j].rgb * 100;
 			}
 			
 		}
@@ -116,7 +128,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	accumFog /= NB_STEPS ;
 		
 	
-	return float4(accumFog,1)*Color;
+	return float4(accumFog,1);
 
 }
 
