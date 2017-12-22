@@ -85,7 +85,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	for (uint i = 0; i < NB_STEPS; i++)
 	{	
 		if( length(currentPosition - endRayPosition) <= stepLength) break;		
-//			uint j = 1;				
+		
 		for (uint j = 0; j < lightCount; j++)
 		{
 			
@@ -99,7 +99,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 						spotTex = 1;
 						break;
 				case 1:
-						spotTex = colTex.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).rgb;
+						spotTex = colTex.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1)*.5,0).rgb;
 						break;
 				case 2:
 						spotTex = 1;
@@ -108,7 +108,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			
 
 		
-			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j)*.5,0).r;
+			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1)*.5,0).r;
 		
 			if (shadowMapValue >= worldInShadowCameraSpace.z)
 			{	

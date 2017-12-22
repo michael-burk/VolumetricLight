@@ -1,5 +1,5 @@
-<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha35.10.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" systemname="Volumetrics" filename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" scrollx="0" scrolly="0" bgcolor="15132390">
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha35.11.dtd" >
+   <PATCH nodename="C:\Users\Ann-Katrin\Desktop\VolumetricLight\Volumetrics.v4p" systemname="Volumetrics" filename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" scrollx="0" scrolly="0" bgcolor="15132390">
    <BOUNDS type="Window" left="1560" top="420" width="15795" height="10305">
    </BOUNDS>
    <PACK Name="addonpack" Version="35.9.0">
@@ -220,32 +220,6 @@
    <PIN pinname="Default" visible="1">
    </PIN>
    <PIN pinname="Is NIL" visible="1">
-   </PIN>
-   </NODE>
-   <NODE systemname="Select (Node)" filename="%VVVV%\lib\nodes\modules\Node\Select (Node).v4p" nodename="Select (Node)" componentmode="Hidden" id="443">
-   <BOUNDS type="Node" left="9885" top="5235" width="100" height="100">
-   </BOUNDS>
-   <PIN pinname="Select" visible="1" slicecount="1" values="0">
-   </PIN>
-   <PIN pinname="Input" visible="1">
-   </PIN>
-   <PIN pinname="Output" visible="1">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="443" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="9915" y="5108">
-   </LINKPOINT>
-   <LINKPOINT x="9915" y="5108">
-   </LINKPOINT>
-   </LINK>
-   <NODE systemname="AvoidNIL (Node)" filename="%VVVV%\lib\nodes\modules\Node\AvoidNIL (Node).v4p" nodename="AvoidNIL (Node)" componentmode="Hidden" id="445">
-   <BOUNDS type="Node" left="9885" top="7305" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Box" left="9885" top="7305">
-   </BOUNDS>
-   <PIN pinname="Input" visible="1" slicecount="1" values="||">
-   </PIN>
-   <PIN pinname="Output" visible="1">
    </PIN>
    </NODE>
    <NODE systemname="AvoidNIL (Node)" filename="%VVVV%\lib\nodes\modules\Node\AvoidNIL (Node).v4p" nodename="AvoidNIL (Node)" componentmode="Hidden" id="448">
@@ -548,62 +522,6 @@
    <LINKPOINT x="9420" y="7133">
    </LINKPOINT>
    </LINK>
-   <NODE systemname="AsTextureArray" filename="modules\AsTextureArray.v4p" nodename="modules\AsTextureArray.v4p" componentmode="Hidden" id="495">
-   <BOUNDS type="Node" left="9870" top="6780" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Box" left="9870" top="6780" width="3000" height="3000">
-   </BOUNDS>
-   <PIN pinname="Target Format" slicecount="1" values="R32_Float">
-   </PIN>
-   <PIN pinname="Texture" visible="1">
-   </PIN>
-   <PIN pinname="SizeXY" visible="1">
-   </PIN>
-   <PIN pinname="Texture Array Out" visible="1">
-   </PIN>
-   <PIN pinname="Mips" slicecount="1" values="0">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="443" srcpinname="Output" dstnodeid="495" dstpinname="Texture" linkstyle="Bezier">
-   <LINKPOINT x="9900" y="6135">
-   </LINKPOINT>
-   <LINKPOINT x="9900" y="6135">
-   </LINKPOINT>
-   </LINK>
-   <NODE systemname="Sort (Spreads)" nodename="Sort (Spreads)" componentmode="Hidden" id="497">
-   <BOUNDS type="Node" left="10530" top="5820" width="100" height="100">
-   </BOUNDS>
-   <PIN pinname="Input" visible="1" slicecount="1" values="512">
-   </PIN>
-   <PIN pinname="Output" visible="1">
-   </PIN>
-   </NODE>
-   <NODE systemname="CAR (Spreads)" nodename="CAR (Spreads)" componentmode="Hidden" id="498">
-   <BOUNDS type="Node" left="10530" top="6270" width="100" height="100">
-   </BOUNDS>
-   <PIN pinname="Input" visible="1">
-   </PIN>
-   <PIN pinname="First Slice" visible="1">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="497" srcpinname="Output" dstnodeid="498" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="10560" y="6180">
-   </LINKPOINT>
-   <LINKPOINT x="10560" y="6180">
-   </LINKPOINT>
-   </LINK>
-   <LINK srcnodeid="498" srcpinname="First Slice" dstnodeid="495" dstpinname="SizeXY" linkstyle="Bezier">
-   <LINKPOINT x="10545" y="6660">
-   </LINKPOINT>
-   <LINKPOINT x="10530" y="6660">
-   </LINKPOINT>
-   </LINK>
-   <LINK srcnodeid="495" srcpinname="Texture Array Out" dstnodeid="445" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="9900" y="7203">
-   </LINKPOINT>
-   <LINKPOINT x="9900" y="7153">
-   </LINKPOINT>
-   </LINK>
    <NODE systemname="AsTextureArray" filename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" nodename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" componentmode="Hidden" id="500">
    <BOUNDS type="Node" left="11805" top="5670" width="100" height="100">
    </BOUNDS>
@@ -702,12 +620,6 @@
    <LINKPOINT x="11765" y="1955">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="505" srcpinname="ShadowRes" dstnodeid="497" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="7725" y="3750">
-   </LINKPOINT>
-   <LINKPOINT x="10530" y="3750">
-   </LINKPOINT>
-   </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="507">
    <BOUNDS type="Box" left="8505" top="6225" width="795" height="240">
    </BOUNDS>
@@ -727,12 +639,6 @@
    <LINK srcnodeid="503" srcpinname="Texture" dstnodeid="499" dstpinname="Texture In">
    </LINK>
    <LINK srcnodeid="503" srcpinname="Texture" dstnodeid="500" dstpinname="Texture">
-   </LINK>
-   <LINK srcnodeid="505" srcpinname="Shadow" dstnodeid="443" dstpinname="Select" linkstyle="Bezier">
-   <LINKPOINT x="7305" y="3465">
-   </LINKPOINT>
-   <LINKPOINT x="10560" y="3465">
-   </LINKPOINT>
    </LINK>
    <LINK srcnodeid="507" srcpinname="Y Output Value" dstnodeid="288" dstpinname="LightType" linkstyle="Bezier">
    <LINKPOINT x="8535" y="7193">
@@ -772,14 +678,14 @@
    </LINK>
    <LINK srcnodeid="518" srcpinname="Output" dstnodeid="288" dstpinname="LightColor">
    </LINK>
-   <LINK srcnodeid="445" srcpinname="Output" dstnodeid="288" dstpinname="shadowMap" linkstyle="Bezier">
-   <LINKPOINT x="9885" y="7708">
-   </LINKPOINT>
-   <LINKPOINT x="8115" y="7758">
-   </LINKPOINT>
-   </LINK>
    <LINK srcnodeid="505" srcpinname="VP" dstnodeid="448" dstpinname="Input">
    </LINK>
    <LINK srcnodeid="500" srcpinname="Texture Array Out" dstnodeid="438" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="288" dstpinname="shadowMap" linkstyle="Bezier">
+   <LINKPOINT x="9885" y="6450">
+   </LINKPOINT>
+   <LINKPOINT x="8100" y="6450">
+   </LINKPOINT>
    </LINK>
    </PATCH>
