@@ -7,7 +7,7 @@ Texture2D depthMap <string uiname="depthMap";>;
 Texture2D noiseTex <string uiname="noise";>;
 
 StructuredBuffer <float4> LightColor;
-Texture2DArray colTex <string uiname="colTex";>;
+Texture2DArray lightMap <string uiname="LightMap";>;
 
 float4x4 tVI;
 float4x4 tPI;
@@ -15,7 +15,8 @@ float4x4 tP;
 
 StructuredBuffer <float> farPlane;
 StructuredBuffer <float3> lPos;
-StructuredBuffer <int> LightType;
+StructuredBuffer <uint> LightType;
+//StructuredBuffer <uint> UseShadow;
 
 float fade;
 
@@ -88,6 +89,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		
 		for (uint j = 0; j < lightCount; j++)
 		{
+//			if(!UseShadow[j]) break;
 			
 			lightDir = float3(lightVP[j]._13, lightVP[j]._23, lightVP[j]._33);
 			worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), lightVP[j]);
@@ -99,7 +101,10 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 						spotTex = 1;
 						break;
 				case 1:
-						spotTex = colTex.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1)*.5,0).rgb;
+						uint tXS,tYS,mS;
+						lightMap.GetDimensions(mS,tXS,tYS);
+						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1)*.5,0).rgb;
+						else if(tXS+tYS < 4) spotTex = smoothstep(1,0,saturate(length(worldInShadowCameraSpace.xy)));
 						break;
 				case 2:
 						spotTex = 1;
