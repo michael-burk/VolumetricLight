@@ -16,7 +16,6 @@ float4x4 tP;
 StructuredBuffer <float> farPlane;
 StructuredBuffer <float3> lPos;
 StructuredBuffer <uint> LightType;
-//StructuredBuffer <uint> UseShadow;
 
 float fade;
 
@@ -58,23 +57,21 @@ float3 UVtoEYE(float2 UV){
 
 
 float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
+	
+	float3 endRayPos =  UVZtoWORLD(x,depthMap.Sample(s0,x).r).xyz;
+	// Ray Origin
+	float3 startPos = tVI[3].xyz;
+	// Ray Direction
+	float3 rayDir = UVtoEYE(x.xy);
+	
+	float3 steppy = rayDir * stepLength;
 
-// UV to Eye Approach
+	startPos += steppy * noiseTex.Sample(s0,x).r;
 	
-		float3 endRayPosition =  UVZtoWORLD(x,depthMap.Sample(s0,x).r).xyz;
-		// Ray Origin
-		float3 startPosition = tVI[3].xyz;
-		// Ray Direction
-		float3 rayDirection = UVtoEYE(x.xy);
-	
-	float3 steppy = rayDirection * stepLength;
-
-	startPosition += steppy * noiseTex.Sample(s0,x).r;
-	
-	float3 currentPosition = startPosition;
+	float3 currentPos = startPos;
 	
 	float3 accumFog = 0.0f.xxx;
-	float shadowMapValue;
+	float  shadowMapValue;
 	float4 worldInShadowCameraSpace;
 
 	float distFactor;
@@ -85,26 +82,25 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	
 	for (uint i = 0; i < NB_STEPS; i++)
 	{	
-		if( length(currentPosition - endRayPosition) <= stepLength) break;		
+		if( length(currentPos - endRayPos) <= stepLength) break;		
 		
 		for (uint j = 0; j < lightCount; j++)
 		{
-//			if(!UseShadow[j]) break;
 			
 			lightDir = float3(lightVP[j]._13, lightVP[j]._23, lightVP[j]._33);
-			worldInShadowCameraSpace = mul(float4(currentPosition, 1.0f), lightVP[j]);
+			worldInShadowCameraSpace = mul(float4(currentPos, 1.0f), lightVP[j]);
 			worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 			
 			
 			switch(LightType[j]){
 				case 0:
-						spotTex = 1;
+						spotTex = 1 * worldInShadowCameraSpace.z > 0; 
 						break;
 				case 1:
 						uint tXS,tYS,mS;
 						lightMap.GetDimensions(mS,tXS,tYS);
-						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1)*.5,0).rgb;
-						else if(tXS+tYS < 4) spotTex = smoothstep(1,0,saturate(length(worldInShadowCameraSpace.xy)));
+						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0, float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1) * .5,0).rgb;
+						else if(tXS+tYS < 4) spotTex = smoothstep(1, 0, saturate(length(worldInShadowCameraSpace.xy)));
 						break;
 				case 2:
 						spotTex = 1;
@@ -113,21 +109,18 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			
 
 		
-			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1)*.5,0).r;
+			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x + 1, -worldInShadowCameraSpace.y + 1, j+1)*.5,0).r;
 		
 			if (shadowMapValue >= worldInShadowCameraSpace.z)
 			{	
-//				distFactor = saturate(1 - pow( mul(float4(currentPosition, 1.0f), lightVP[j]).z / farPlane[j] * fade, 3));
-				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPosition - lPos[j])), 1);
-				accumFog += ComputeScattering(dot(rayDirection, lightDir)).r * distFactor * brightness * stepLength  *
+				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPos - lPos[j])), 1);
+				accumFog += ComputeScattering(dot(rayDir, lightDir)).r * distFactor * brightness * stepLength  *
 				spotTex.rgb * LightColor[j].rgb * 100;
 			}
 			
 		}
-					
-		
-			currentPosition += steppy;
-		
+	
+			currentPos += steppy;		
 	}
 	
 	accumFog /= NB_STEPS ;
@@ -136,8 +129,6 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	return float4(accumFog,1);
 
 }
-
-
 
 technique10 Volumetric_Light{
 	pass P1<string format="R16G16B16A16_float";>{SetPixelShader(CompileShader(ps_5_0,VolumetricLight()));}
