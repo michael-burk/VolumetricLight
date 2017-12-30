@@ -99,7 +99,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 				case 1:
 						uint tXS,tYS,mS;
 						lightMap.GetDimensions(mS,tXS,tYS);
-						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0, float3(worldInShadowCameraSpace.x+1,-worldInShadowCameraSpace.y+1, j+1) * .5,0).rgb;
+						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0, float3(worldInShadowCameraSpace.x + 1,-worldInShadowCameraSpace.y + 1, j + 1) * .5,0).rgb;
 						else if(tXS+tYS < 4) spotTex = smoothstep(1, 0, saturate(length(worldInShadowCameraSpace.xy)));
 						break;
 				case 2:
@@ -109,7 +109,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			
 
 		
-			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x + 1, -worldInShadowCameraSpace.y + 1, j+1)*.5,0).r;
+			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x + 1, -worldInShadowCameraSpace.y + 1, j + 1)*.5,0).r;
 		
 			if (shadowMapValue >= worldInShadowCameraSpace.z)
 			{	
