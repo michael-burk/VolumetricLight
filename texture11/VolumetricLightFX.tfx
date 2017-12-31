@@ -87,8 +87,9 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		for (uint j = 0; j < lightCount; j++)
 		{
 			
-			lightDir = float3(lightVP[j]._13, lightVP[j]._23, lightVP[j]._33);
-			worldInShadowCameraSpace = mul(float4(currentPos, 1.0f), lightVP[j]);
+			float4x4 LVP = (lightVP[j]); 
+			lightDir = float3(LVP._13, LVP._23, LVP._33);
+			worldInShadowCameraSpace = mul(float4(currentPos, 1.0f), LVP);
 			worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 			
 			
@@ -103,7 +104,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 						else if(tXS+tYS < 4) spotTex = smoothstep(1, 0, saturate(length(worldInShadowCameraSpace.xy)));
 						break;
 				case 2:
-						spotTex = 1;
+						spotTex = 0.1666666667;
 						break;
 			}
 			
