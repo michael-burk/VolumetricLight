@@ -119,15 +119,15 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 			{	
 				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPos - lPos[j])), 1);
 				accumFog += ComputeScattering(dot(rayDir, lightDir)).r * distFactor * brightness * stepLength  *
-				spotTex.rgb * LightColor[j].rgb * 100;
+				spotTex.rgb * LightColor[j].rgb * 10;
 			}
 			
 		}
 	
-			currentPos += steppy;		
+			currentPos += steppy /* NB_STEPS */;		
 	}
 	
-	accumFog /= NB_STEPS ;
+	accumFog ;
 
 	
 	return float4(accumFog,1);

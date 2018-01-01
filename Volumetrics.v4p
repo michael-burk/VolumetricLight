@@ -257,7 +257,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="14190" top="2265" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -604,26 +604,6 @@
    <PIN pinname="Descriptive Name" slicecount="1" values="Input">
    </PIN>
    </NODE>
-   <NODE systemname="AsTextureArray" filename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" nodename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" componentmode="Hidden" id="500">
-   <BOUNDS type="Node" left="11805" top="5670" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Box" left="11805" top="5670" width="3000" height="3000">
-   </BOUNDS>
-   <PIN pinname="Texture" visible="1" slicecount="1" values="||">
-   </PIN>
-   <PIN pinname="Texture Array Out" visible="1">
-   </PIN>
-   <PIN pinname="SizeXY" slicecount="1" visible="1" values="512">
-   </PIN>
-   <PIN pinname="Target Format" slicecount="1" visible="1" values="R32G32B32A32_Float">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="501" srcpinname="First Slice" dstnodeid="500" dstpinname="SizeXY">
-   </LINK>
-   <LINK srcnodeid="500" srcpinname="Texture Array Out" dstnodeid="438" dstpinname="Input">
-   </LINK>
-   <LINK srcnodeid="526" srcpinname="Texture" dstnodeid="500" dstpinname="Texture">
-   </LINK>
    <LINK srcnodeid="476" srcpinname="Texture Out" dstnodeid="438" dstpinname="Default">
    </LINK>
    <LINK srcnodeid="438" srcpinname="Output" dstnodeid="288" dstpinname="LightMap" linkstyle="Bezier">
@@ -675,5 +655,25 @@
    <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="288" dstpinname="shadowMap">
    </LINK>
    <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="288" dstpinname="shadowMaps">
+   </LINK>
+   <NODE systemname="AsTextureArray" filename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" nodename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" componentmode="Hidden" id="500">
+   <BOUNDS type="Node" left="11805" top="5670" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="11805" top="5670" width="3000" height="3000">
+   </BOUNDS>
+   <PIN pinname="Texture" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Texture Array Out" visible="1">
+   </PIN>
+   <PIN pinname="SizeXY" slicecount="1" visible="1" values="512">
+   </PIN>
+   <PIN pinname="Target Format" slicecount="1" visible="1" values="R32G32B32A32_Float">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="501" srcpinname="First Slice" dstnodeid="500" dstpinname="SizeXY">
+   </LINK>
+   <LINK srcnodeid="500" srcpinname="Texture Array Out" dstnodeid="438" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="526" srcpinname="Texture" dstnodeid="500" dstpinname="Texture">
    </LINK>
    </PATCH>
