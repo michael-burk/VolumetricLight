@@ -1,8 +1,9 @@
 SamplerState s0 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=BORDER;AddressV=BORDER;};
 SamplerState s1 <bool visible=false;string uiname="Sampler";> {Filter=MIN_MAG_MIP_LINEAR;AddressU=WRAP;AddressV=WRAP;};
+
 float2 R:TARGETSIZE;
 
-Texture2DArray shadowMap <string uiname="shadowMap";>;
+Texture2DArray shadowMaps <string uiname="shadowMaps";>;
 Texture2D depthMap <string uiname="depthMap";>;
 Texture2D noiseTex <string uiname="noise";>;
 
@@ -71,7 +72,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	float3 currentPos = startPos;
 	
 	float3 accumFog = 0.0f.xxx;
-	float  shadowMapValue;
+	float  shadowMapValue = 0;
 	float4 worldInShadowCameraSpace;
 
 	float distFactor;
@@ -86,32 +87,34 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 		
 		for (uint j = 0; j < lightCount; j++)
 		{
-			
+
 			float4x4 LVP = (lightVP[j]); 
+			
 			lightDir = float3(LVP._13, LVP._23, LVP._33);
+			
 			worldInShadowCameraSpace = mul(float4(currentPos, 1.0f), LVP);
 			worldInShadowCameraSpace /= worldInShadowCameraSpace.w;
 			
 			
 			switch(LightType[j]){
 				case 0:
-						spotTex = 1 * worldInShadowCameraSpace.z > 0; 
+						spotTex = worldInShadowCameraSpace.z > 0; 
 						break;
 				case 1:
 						uint tXS,tYS,mS;
 						lightMap.GetDimensions(mS,tXS,tYS);
-						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0, float3(worldInShadowCameraSpace.x + 1,-worldInShadowCameraSpace.y + 1, j + 1) * .5,0).rgb;
+						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0, float3((worldInShadowCameraSpace.x + 1) * .5,(-worldInShadowCameraSpace.y + 1) * .5, j),0).rgb;
 						else if(tXS+tYS < 4) spotTex = smoothstep(1, 0, saturate(length(worldInShadowCameraSpace.xy)));
 						break;
 				case 2:
-						spotTex = 0.1666666667;
+						spotTex = .25;
 						break;
 			}
 			
 
 		
-			shadowMapValue = shadowMap.SampleLevel(s0,float3(worldInShadowCameraSpace.x + 1, -worldInShadowCameraSpace.y + 1, j + 1)*.5,0).r;
-		
+			shadowMapValue = shadowMaps.SampleLevel(s0, float3((worldInShadowCameraSpace.x + 1) * .5, (-worldInShadowCameraSpace.y + 1) * .5, j), 0).r;
+			
 			if (shadowMapValue >= worldInShadowCameraSpace.z)
 			{	
 				distFactor =  pow(saturate( farPlane[j] * fade - length(currentPos - lPos[j])), 1);
@@ -125,12 +128,15 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 	}
 	
 	accumFog /= NB_STEPS ;
-		
+
 	
 	return float4(accumFog,1);
 
 }
 
 technique10 Volumetric_Light{
-	pass P1<string format="R16G16B16A16_float";>{SetPixelShader(CompileShader(ps_5_0,VolumetricLight()));}
+	pass P1<string format="R16G16B16A16_float";>{
+		SetPixelShader(CompileShader(ps_5_0, VolumetricLight()));
+		
+	}
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha35.11.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" systemname="Volumetrics" filename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" scrollx="555" scrolly="1335" bgcolor="15132390">
-   <BOUNDS type="Window" left="510" top="630" width="15795" height="10305">
+   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" systemname="Volumetrics" filename="C:\Users\Michael\Desktop\PROJECTS\VolumetricLight\Volumetrics.v4p" scrollx="0" scrolly="390" bgcolor="15132390">
+   <BOUNDS type="Window" left="1110" top="1350" width="11445" height="13365">
    </BOUNDS>
    <PACK Name="addonpack" Version="35.9.0">
    </PACK>
@@ -49,7 +49,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="5535" top="7335" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1.9">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -413,7 +413,7 @@
    </BOUNDS>
    <BOUNDS type="Box" left="1185" top="7920" width="13305" height="11770">
    </BOUNDS>
-   <BOUNDS type="Window" left="2040" top="1815" width="16950" height="11760">
+   <BOUNDS type="Window" left="2040" top="1815" width="20550" height="13155">
    </BOUNDS>
    <PIN pinname="fadeZ" slicecount="1" values="1.78">
    </PIN>
@@ -476,6 +476,8 @@
    <PIN pinname="UseShadow" visible="1">
    </PIN>
    <PIN pinname="LightMap" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="shadowMaps" visible="1">
    </PIN>
    </NODE>
    <LINK srcnodeid="242" srcpinname="Output" dstnodeid="288" dstpinname="LowRes" linkstyle="Bezier">
@@ -582,12 +584,6 @@
    </LINK>
    <LINK srcnodeid="518" srcpinname="Output" dstnodeid="288" dstpinname="LightColor">
    </LINK>
-   <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="288" dstpinname="shadowMap" linkstyle="Bezier">
-   <LINKPOINT x="9885" y="6450">
-   </LINKPOINT>
-   <LINKPOINT x="8100" y="6450">
-   </LINKPOINT>
-   </LINK>
    <NODE systemname="FromPointer (DX11.Texture 2d)" filename="%VVVV%\packs\superphysical\plugins\PointerNodes.dll" nodename="FromPointer (DX11.Texture 2d)" componentmode="Hidden" id="526" debug="0">
    <BOUNDS type="Node" left="11790" top="2310" width="100" height="100">
    </BOUNDS>
@@ -608,7 +604,35 @@
    <PIN pinname="Descriptive Name" slicecount="1" values="Input">
    </PIN>
    </NODE>
-   <NODE systemname="GetShadowData_Volumetrics (SuperPhysical)" filename="..\..\..\..\..\vvvv\vvvv_50alpha35.10_x64\packs\SuperPhysical\plugins\vl\VVVV.Value.SuperPhysical.vl" nodename="GetShadowData_Volumetrics (SuperPhysical)" componentmode="Hidden" id="537">
+   <NODE systemname="AsTextureArray" filename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" nodename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" componentmode="Hidden" id="500">
+   <BOUNDS type="Node" left="11805" top="5670" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="11805" top="5670" width="3000" height="3000">
+   </BOUNDS>
+   <PIN pinname="Texture" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Texture Array Out" visible="1">
+   </PIN>
+   <PIN pinname="SizeXY" slicecount="1" visible="1" values="512">
+   </PIN>
+   <PIN pinname="Target Format" slicecount="1" visible="1" values="R32G32B32A32_Float">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="501" srcpinname="First Slice" dstnodeid="500" dstpinname="SizeXY">
+   </LINK>
+   <LINK srcnodeid="500" srcpinname="Texture Array Out" dstnodeid="438" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="526" srcpinname="Texture" dstnodeid="500" dstpinname="Texture">
+   </LINK>
+   <LINK srcnodeid="476" srcpinname="Texture Out" dstnodeid="438" dstpinname="Default">
+   </LINK>
+   <LINK srcnodeid="438" srcpinname="Output" dstnodeid="288" dstpinname="LightMap" linkstyle="Bezier">
+   <LINKPOINT x="11790" y="7215">
+   </LINKPOINT>
+   <LINKPOINT x="7200" y="7215">
+   </LINKPOINT>
+   </LINK>
+   <NODE systemname="GetShadowData_Volumetrics (SuperPhysical)" filename="%VVVV%\packs\SuperPhysical\plugins\vl\VVVV.Value.SuperPhysical.vl" nodename="GetShadowData_Volumetrics (SuperPhysical)" componentmode="Hidden" id="537">
    <BOUNDS type="Node" left="5985" top="1440" width="4695" height="270">
    </BOUNDS>
    <PIN pinname="Input" slicecount="1" values="||">
@@ -646,34 +670,10 @@
    </LINK>
    <LINK srcnodeid="536" srcpinname="Output Node" dstnodeid="537" dstpinname="Input">
    </LINK>
-   <NODE systemname="AsTextureArray" filename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" nodename="%VVVV%\packs\SuperPhysical\03 SuperPhysical - SCENE\modules\light\shadow\AsTextureArray.v4p" componentmode="Hidden" id="500">
-   <BOUNDS type="Node" left="11805" top="5670" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Box" left="11805" top="5670" width="3000" height="3000">
-   </BOUNDS>
-   <PIN pinname="Texture" visible="1" slicecount="1" values="||">
-   </PIN>
-   <PIN pinname="Texture Array Out" visible="1">
-   </PIN>
-   <PIN pinname="SizeXY" slicecount="1" visible="1" values="512">
-   </PIN>
-   <PIN pinname="Target Format" slicecount="1" visible="1" values="R32G32B32A32_Float">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="501" srcpinname="First Slice" dstnodeid="500" dstpinname="SizeXY">
-   </LINK>
-   <LINK srcnodeid="500" srcpinname="Texture Array Out" dstnodeid="438" dstpinname="Input">
-   </LINK>
-   <LINK srcnodeid="526" srcpinname="Texture" dstnodeid="500" dstpinname="Texture">
-   </LINK>
-   <LINK srcnodeid="476" srcpinname="Texture Out" dstnodeid="438" dstpinname="Default">
-   </LINK>
-   <LINK srcnodeid="438" srcpinname="Output" dstnodeid="288" dstpinname="LightMap" linkstyle="Bezier">
-   <LINKPOINT x="11790" y="7215">
-   </LINKPOINT>
-   <LINKPOINT x="7200" y="7215">
-   </LINKPOINT>
-   </LINK>
    <LINK srcnodeid="448" srcpinname="Output" dstnodeid="288" dstpinname="LightVP">
+   </LINK>
+   <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="288" dstpinname="shadowMap">
+   </LINK>
+   <LINK srcnodeid="420" srcpinname="Output Node" dstnodeid="288" dstpinname="shadowMaps">
    </LINK>
    </PATCH>
