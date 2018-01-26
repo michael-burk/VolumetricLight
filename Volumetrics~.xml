@@ -209,7 +209,7 @@
    <NODE systemname="AvoidNIL (Spreads)" filename="%VVVV%\lib\nodes\modules\Spreads\AvoidNIL (Spreads).v4p" nodename="AvoidNIL (Spreads)" componentmode="Hidden" id="449">
    <BOUNDS type="Node" left="6360" top="2580" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Input" visible="1" slicecount="1" values="0">
+   <PIN pinname="Input" visible="1">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -219,7 +219,7 @@
    <NODE systemname="AvoidNIL (Spreads)" filename="%VVVV%\lib\nodes\modules\Spreads\AvoidNIL (Spreads).v4p" nodename="AvoidNIL (Spreads)" componentmode="Hidden" id="480">
    <BOUNDS type="Node" left="7095" top="4050" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Input" visible="1" slicecount="3" values="0,0,0">
+   <PIN pinname="Input" visible="1">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -305,7 +305,7 @@
    <NODE systemname="AvoidNIL (Spreads)" filename="%VVVV%\lib\nodes\modules\Spreads\AvoidNIL (Spreads).v4p" nodename="AvoidNIL (Spreads)" componentmode="Hidden" id="517">
    <BOUNDS type="Node" left="8505" top="4050" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Input" visible="1" slicecount="1" values="0">
+   <PIN pinname="Input" visible="1">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -315,7 +315,7 @@
    <NODE systemname="AvoidNIL (Color)" filename="%VVVV%\lib\nodes\modules\Color\AvoidNIL (Color).v4p" nodename="AvoidNIL (Color)" componentmode="Hidden" id="518">
    <BOUNDS type="Node" left="9750" top="2445" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Input" visible="1" slicecount="1" values="|0.50196,0.50196,0.50196,1.00000|">
+   <PIN pinname="Input" visible="1">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -543,7 +543,7 @@
    </BOUNDS>
    <PIN pinname="Texture" visible="1">
    </PIN>
-   <PIN pinname="Pointer" visible="1" slicecount="1" values="0">
+   <PIN pinname="Pointer" visible="1">
    </PIN>
    </NODE>
    <LINK srcnodeid="561" srcpinname="Texture" dstnodeid="562" dstpinname="Input" linkstyle="Bezier">
@@ -555,7 +555,7 @@
    <NODE systemname="EQ (Value)" nodename="EQ (Value)" componentmode="Hidden" id="560">
    <BOUNDS type="Node" left="11145" top="4425" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Input 1" visible="1" slicecount="1" values="0">
+   <PIN pinname="Input 1" visible="1">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -714,52 +714,52 @@
    </LINK>
    <LINK srcnodeid="556" srcpinname="Texture Array Out" dstnodeid="288" dstpinname="LightMap">
    </LINK>
-   <NODE systemname="GetVolumetricsData (SuperPhysical)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="GetVolumetricsData (SuperPhysical)" componentmode="Hidden" id="564">
+   <NODE systemname="GetVolumetricsData (SuperPhysical)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="GetVolumetricsData (SuperPhysical)" componentmode="Hidden" id="563">
    <BOUNDS type="Node" left="6000" top="1440" width="4695" height="270">
    </BOUNDS>
    </NODE>
-   <LINK srcnodeid="564" srcpinname="Range" dstnodeid="449" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="6675" y="2145">
+   <LINK srcnodeid="563" srcpinname="Range" dstnodeid="449" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="6595" y="2130">
    </LINKPOINT>
-   <LINKPOINT x="6390" y="2145">
-   </LINKPOINT>
-   </LINK>
-   <LINK srcnodeid="564" srcpinname="PositionXYZ" dstnodeid="480" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="7335" y="2873">
-   </LINKPOINT>
-   <LINKPOINT x="7125" y="2873">
+   <LINKPOINT x="6395" y="2130">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="564" srcpinname="LightType" dstnodeid="517" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="10290" y="2873">
+   <LINK srcnodeid="563" srcpinname="PositionXYZ" dstnodeid="480" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="7165" y="2873">
    </LINKPOINT>
-   <LINKPOINT x="8565" y="2873">
-   </LINKPOINT>
-   </LINK>
-   <LINK srcnodeid="564" srcpinname="Color" dstnodeid="518" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="9675" y="2070">
-   </LINKPOINT>
-   <LINKPOINT x="9765" y="2070">
+   <LINKPOINT x="7130" y="2873">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="564" srcpinname="VP" dstnodeid="448" dstpinname="Input" linkstyle="Bezier">
-   <LINKPOINT x="6015" y="2880">
+   <LINK srcnodeid="563" srcpinname="LightType" dstnodeid="517" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="10330" y="2865">
    </LINKPOINT>
-   <LINKPOINT x="6015" y="2880">
-   </LINKPOINT>
-   </LINK>
-   <LINK srcnodeid="536" srcpinname="Output Node" dstnodeid="564" dstpinname="Input">
-   </LINK>
-   <LINK srcnodeid="564" srcpinname="SpotLightTex" dstnodeid="561" dstpinname="Pointer" linkstyle="Bezier">
-   <LINKPOINT x="8715" y="2873">
-   </LINKPOINT>
-   <LINKPOINT x="12000" y="2873">
+   <LINKPOINT x="8570" y="2865">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="564" srcpinname="SpotLightTex" dstnodeid="560" dstpinname="Input 1" linkstyle="Bezier">
-   <LINKPOINT x="8715" y="3060">
+   <LINK srcnodeid="563" srcpinname="Color" dstnodeid="518" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="9790" y="2078">
    </LINKPOINT>
-   <LINKPOINT x="11145" y="3060">
+   <LINKPOINT x="9785" y="2078">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="563" srcpinname="VP" dstnodeid="448" dstpinname="Input" linkstyle="Bezier">
+   <LINKPOINT x="6025" y="2880">
+   </LINKPOINT>
+   <LINKPOINT x="6020" y="2880">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="536" srcpinname="Output Node" dstnodeid="563" dstpinname="Input">
+   </LINK>
+   <LINK srcnodeid="563" srcpinname="SpotLightTex" dstnodeid="561" dstpinname="Pointer" linkstyle="Bezier">
+   <LINKPOINT x="8950" y="2873">
+   </LINKPOINT>
+   <LINKPOINT x="12005" y="2873">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="563" srcpinname="SpotLightTex" dstnodeid="560" dstpinname="Input 1" linkstyle="Bezier">
+   <LINKPOINT x="8950" y="3053">
+   </LINKPOINT>
+   <LINKPOINT x="11150" y="3053">
    </LINKPOINT>
    </LINK>
    </PATCH>
