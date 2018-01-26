@@ -102,7 +102,7 @@ float4 VolumetricLight(float4 PosWVP:SV_POSITION,float2 x:TEXCOORD0):SV_TARGET{
 						break;
 				case 1:
 						uint tXS,tYS,mS;
-						lightMap.GetDimensions(mS,tXS,tYS);
+						lightMap.GetDimensions(tXS,tYS,mS);
 						if(tXS+tYS > 4) spotTex = lightMap.SampleLevel(s0, float3((worldInShadowCameraSpace.x + 1) * .5,(-worldInShadowCameraSpace.y + 1) * .5, j),0).rgb;
 						else if(tXS+tYS < 4) spotTex = smoothstep(1, 0, saturate(length(worldInShadowCameraSpace.xy)));
 						break;
